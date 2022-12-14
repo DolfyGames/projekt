@@ -19,6 +19,17 @@ class Gui():
             add_buchung = customtkinter.CTkToplevel()
             add_buchung.geometry("500x400")
             label = customtkinter.CTkLabel(add_buchung, text="Buchung hinzufügen")
+            label.grid(row=0,column=0)
+
+            label_title = customtkinter.CTkLabel(add_buchung, text="Titel")
+            label_title.grid(row=1, column=0)
+            title = customtkinter.CTkEntry(add_buchung,placeholder_text="Titel")
+            title.grid(row=1, column=1)
+
+            label_wert = customtkinter.CTkLabel(add_buchung, text="Wert")
+            label_wert.grid(row=2, column=0)
+            wert = customtkinter.CTkEntry(add_buchung,placeholder_text="Wert")
+            wert.grid(row=2, column=1)
 
         def create_buchungs_gui(buchung_):
             if buchung_["buchungs_art"] == "in":
@@ -53,7 +64,7 @@ class Gui():
         self.buchungen = get_buchungen()
         set_update_buchungen()
 
-        add_button = customtkinter.CTkButton(frame1, width=450, height=100,fg_color="#49705c", hover_color="#59886f", text="+", command=add_buchung())
+        add_button = customtkinter.CTkButton(frame1, width=450, height=100,fg_color="#49705c", hover_color="#59886f", text="+", command=add_buchung)
         add_button.pack()
 
 
