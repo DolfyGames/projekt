@@ -6,8 +6,7 @@ class Gui():
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.buchungen = []
-        self.buchung = []
+
 
 
 
@@ -67,8 +66,9 @@ class Gui():
         add_button = customtkinter.CTkButton(frame1, width=450, height=100,fg_color="#49705c", hover_color="#59886f", text="+", command=add_buchung)
         add_button.pack()
 
-
-
+        def disable_event():
+            app.destroy()
+        app.protocol("WM_DELETE_WINDOW", disable_event)
         app.mainloop()
 
 
