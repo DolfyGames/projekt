@@ -1,6 +1,6 @@
 import customtkinter
 from data import get_buchungen
-
+import popup
 
 class Gui():
     def __init__(self, width, height):
@@ -15,20 +15,8 @@ class Gui():
         # https://docs.python.org/3/library/tk.html dokumentation tkinter
 
         def add_buchung():
-            add_buchung = customtkinter.CTkToplevel()
-            add_buchung.geometry("500x400")
-            label = customtkinter.CTkLabel(add_buchung, text="Buchung hinzufügen")
-            label.grid(row=0,column=0)
-
-            label_title = customtkinter.CTkLabel(add_buchung, text="Titel")
-            label_title.grid(row=1, column=0)
-            title = customtkinter.CTkEntry(add_buchung,placeholder_text="Titel")
-            title.grid(row=1, column=1)
-
-            label_wert = customtkinter.CTkLabel(add_buchung, text="Wert")
-            label_wert.grid(row=2, column=0)
-            wert = customtkinter.CTkEntry(add_buchung,placeholder_text="Wert")
-            wert.grid(row=2, column=1)
+            add_buchung = popup.Popup()
+            add_buchung.create_pop_up()
 
         def create_buchungs_gui(buchung_):
             if buchung_["buchungs_art"] == "in":
