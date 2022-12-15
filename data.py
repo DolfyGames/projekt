@@ -1,7 +1,7 @@
 import json 
 konten = []
 kategorien = []
-buchungen = [{"title":"title","wert":"wert","buchungs_art":"in","konto":"konto","zeitpunkt":"zeitpunkt"},{"title":"title","wert":"wert","buchungs_art":"out","konto":"konto","zeitpunkt":"zeitpunkt"}]
+buchungen = [{"title":"title","wert":"wert","buchungs_art":"in","konto":"konto","kategorie":[],"zeitpunkt":"zeitpunkt"},{"title":"title","wert":"wert","buchungs_art":"out","konto":"konto","kategorie":[],"zeitpunkt":"zeitpunkt"}]
 
 alles = {"konten":konten, "kategorien":kategorien,"buchungen":buchungen}
 
@@ -19,9 +19,11 @@ def save():
         json.dump(alles, file)
 
 # fügt eine Buchung hinzu
-def add_buchung(title,wert,buchungs_art,konto,zeitpunkt):
-    buchungen.append({"title":title,"wert":wert,"buchungs_art":buchungs_art,"konto":konto,"zeitpunkt":zeitpunkt})
+def add_buchung(title,wert,buchungs_art,konto,kategorie,zeitpunkt):
+    buchungen.append({"title":title,"wert":wert,"buchungs_art":buchungs_art,"konto":konto,"kategorie":kategorie,"zeitpunkt":zeitpunkt})
 
+def add_konto(name, kontonummer):
+    konten.append({"name":name,"kontonummer":kontonummer})
 
 # ermöglich daten zu ändern oder zu entfernen
 # changes ist entweder remove oder die komplette buchung mit den änderungen

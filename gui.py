@@ -16,7 +16,7 @@ class Gui():
 
         def add_buchung():
             add_buchung = popup.Popup()
-            add_buchung.create_pop_up()
+            add_buchung.create_pop_up_buchung()
 
         def create_buchungs_gui(buchung_):
             if buchung_["buchungs_art"] == "in":
