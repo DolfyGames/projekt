@@ -23,8 +23,12 @@ class Popup():
                 print("bruh")
         konten = get_konten()
         select_konto = customtkinter.StringVar(value="Wählen sie ein Konto")
-        values_ = ["Wählen sie ein Konto",konten,"Weiteres Konto hinzufügen"]
-        select_konto = customtkinter.CTkOptionMenu(master = add_buchung, text="Konto",values=values_,command=set_selected,variable=select_konto)
+        values_ = ["Wählen sie ein Konto"]
+        values_.extend(konten)
+        values_.append("Weiteres Konto hinzufügen")
+        print(values_)
+        select_konto = customtkinter.CTkOptionMenu(master = add_buchung,values=values_,command=set_selected)
         select_konto.grid(row=3, column=1)
+        select_konto.set("Wählen sie ein Konto")
 
 
