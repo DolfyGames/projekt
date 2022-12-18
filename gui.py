@@ -15,8 +15,7 @@ class Gui():
         # https://docs.python.org/3/library/tk.html dokumentation tkinter
 
         def add_buchung():
-            add_buchung = popup.Popup()
-            add_buchung.create_pop_up_buchung()
+            popup.create_popup_buchung()
 
         def create_buchungs_gui(buchung_):
             if buchung_["buchungs_art"] == "in":
