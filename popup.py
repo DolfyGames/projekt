@@ -18,15 +18,14 @@ class Popup_Buchung():
         wert.grid(row=2, column=1)
         
         def create_konto_optionmenu():
-            konten = get_konten()
-            select_konto = customtkinter.StringVar(value="Wählen sie ein Konto")
-            values_ = ["Wählen sie ein Konto"]
-            values_.extend(konten)
             def set_selected(choice):
                 if choice == "Weiteres Konto hinzufügen":
                     konto_popup = Popup_Konto()
                     konto_popup.create_pop_up_konto(values=values_,optionmenu=select_konto)
-
+            konten = get_konten()
+            select_konto = customtkinter.StringVar(value="Wählen sie ein Konto")
+            values_ = ["Wählen sie ein Konto"]
+            values_.extend(konten)
             values_.append("Weiteres Konto hinzufügen")
             select_konto = customtkinter.CTkOptionMenu(master = add_buchung_fenster,values=values_,command=set_selected)
             select_konto.grid(row=3, column=1)
