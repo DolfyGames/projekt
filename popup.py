@@ -17,27 +17,26 @@ class Popup_Buchung():
         wert = customtkinter.CTkEntry(add_buchung_fenster,placeholder_text="Wert")
         wert.grid(row=2, column=1)
         
-        def create_konto_optionmenu():
-            def set_selected(choice):
-                if choice == "Weiteres Konto hinzufügen":
-                    konto_popup = Popup_Konto()
-                    konto_popup.create_pop_up_konto(values=values_,optionmenu=select_konto)
-            konten = get_konten()
-            select_konto = customtkinter.StringVar(value="Wählen sie ein Konto")
-            values_ = ["Wählen sie ein Konto"]
-            values_.extend(konten)
-            values_.append("Weiteres Konto hinzufügen")
-            select_konto = customtkinter.CTkOptionMenu(master = add_buchung_fenster,values=values_,command=set_selected)
-            select_konto.grid(row=3, column=1)
-            select_konto.set("Wählen sie ein Konto")
-        create_konto_optionmenu()
+        def set_selected(choice):
+            if choice == "Weiteres Konto hinzufügen":
+                konto_popup = Popup_Konto()
+                konto_popup.create_pop_up_konto(values=values_,optionmenu=select_konto)
+        konten = get_konten()
+        select_konto = customtkinter.StringVar(value="Wählen sie ein Konto")
+        values_ = ["Wählen sie ein Konto"]
+        values_.extend(konten)
+        values_.append("Weiteres Konto hinzufügen")
+        select_konto = customtkinter.CTkOptionMenu(master = add_buchung_fenster,values=values_,command=set_selected)
+        select_konto.grid(row=3, column=1)
+        select_konto.set("Wählen sie ein Konto")
+
 
 def create_popup_buchung():
     this = Popup_Buchung()
     this.create_pop_up_buchung()
 #############################################################################################################################
 class Popup_Konto():
-    def create_pop_up_konto(self,values,optionmenu):
+    def create_pop_up_konto(self,values,parent_optionmenu):
         add_konto_fenster = customtkinter.CTkToplevel()
         add_konto_fenster.geometry("500x200")
 
@@ -58,7 +57,7 @@ class Popup_Konto():
         def complete_add_konto():
             add_konto(name.get(), kontonummer.get())
             values.insert(len(values)-1,name.get())
-            optionmenu.configure(values=values)# <-----
+            parent_optionmenu.configure(values=values)# <-----
 
             add_konto_fenster.destroy()
 
