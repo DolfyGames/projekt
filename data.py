@@ -8,7 +8,7 @@ alles = {"konten":konten, "kategorien":kategorien,"buchungen":buchungen}
 def load():
     # Öffne die Datei zum Lesen
     with open("data.json", "r") as file:
-        # Lade die Daten aus der Datei und speichere sie in einem Dictionary
+        # Laden der Daten aus der Datei
         alles = json.load(file)
 
 def save():
