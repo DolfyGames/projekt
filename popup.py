@@ -101,10 +101,11 @@ class Popup_Buchung():
                 return check_
 
             if check() == True:
+                
                 add_buchung(
                             title=title.get(), 
                             wert=float(wert.get()),
-                            buchungs_art=in_out,
+                            buchungs_art=in_out.__contains__("+") ? "in":"out", # da die String in der Auswahl (aus Verständnissgründen) nicht der verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
                             konto=konto_
                             )
                 add_buchung_fenster.destroy()
