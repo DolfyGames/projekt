@@ -2,7 +2,9 @@ import customtkinter
 from data import get_buchungen
 import popup
 
-# erstellt die komplette Benutzeroberfläche 
+# erstellt die komplette Benutzeroberfläche
+
+
 class Gui():
     def __init__(self, width, height):
         self.width = width
@@ -28,9 +30,10 @@ class Gui():
             title_.insert("0.0", buchung_["title"])
             title_.configure(state="disabled")
             title_.pack()
+            
         # aktualisiert die Buchungslistenansicht
         def set_update_buchungen():
-            for i in self.buchungen:
+            for i in buchungen:
                 create_buchungs_gui(i)
 
         # Standart konfiguration für das Fenster
@@ -38,29 +41,26 @@ class Gui():
         app = customtkinter.CTk()
         app.geometry(self.width+"x"+self.height)
 
-        # Standart Oberflächenitems 
+        # Standart Oberflächenitems
         frame = customtkinter.CTkFrame(app, width=500, height=500)
         frame.pack(pady=5)
 
-        title = customtkinter.CTkLabel(frame,width=500, height=20, text="Buchungen")
-        title.pack(pady=2,padx=2)
+        title = customtkinter.CTkLabel(frame, width=500, height=20, text="Buchungen")
+        title.pack(pady=2, padx=2)
 
         frame1 = customtkinter.CTkFrame(frame, width=450, height=100)
         frame1.pack(pady=5)
 
-        self.buchungen = get_buchungen()
+        buchungen = get_buchungen()
         set_update_buchungen()
 
-        add_button = customtkinter.CTkButton(frame1, width=450, height=100,fg_color="#49705c", hover_color="#59886f", text="+", command=add_buchung)
+        add_button = customtkinter.CTkButton(frame1, width=450, height=100, fg_color="#49705c", hover_color="#59886f", text="+", command=add_buchung)
         add_button.pack()
-
 
         # hiermit kann man das Programm schließen und man kann hier später auch noch eine Funktion zum Speichern aufrufen, bevor das Fenster geschlossen wird
         def disable_event():
             app.destroy()
         app.protocol("WM_DELETE_WINDOW", disable_event)
 
-        # 
+        #
         app.mainloop()
-
-
