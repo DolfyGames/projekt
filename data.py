@@ -8,8 +8,9 @@ buchungen = [{"title": "title",
               "kategorie": [],
               "zeitpunkt":"zeitpunkt"},
              {"title": "title",
-              "wert": "wert", "buchungs_art": "out",
-                 "konto": "konto",
+              "wert": "wert", 
+              "buchungs_art": "out",
+                "konto": "konto",
                  "kategorie": [],
                  "zeitpunkt":"zeitpunkt"}]
 

@@ -1,12 +1,15 @@
 import customtkinter
+import datetime
 from data import add_buchung, add_konto, get_konten, get_kategorien, add_kategorie
-
 # erstellt ein Popup-Fenster, um eine Buchunghinzuzufügen
 # Quelle:
         # https://github.com/TomSchimansky/CustomTkinter (dokumentation zu customtkiner)
         # https://docs.python.org/3/library/tk.html (dokumentation tkinter)
 
 class Popup_Buchung():
+    def __init__(self, parent):
+        self.parent = parent
+    
     def create_pop_up_buchung(self):
         add_buchung_fenster = customtkinter.CTkToplevel()
         add_buchung_fenster.geometry("700x500")
@@ -21,7 +24,11 @@ class Popup_Buchung():
         label_wert = customtkinter.CTkLabel(add_buchung_fenster, text="Wert")
         label_wert.grid(row=2, column=0)
         values = ["Einzahlung (+)", "Zahlungsart", "Auszahlung (-)"]
-        select_in_out = customtkinter.CTkOptionMenu(master=add_buchung_fenster, values=values)
+        def check_input_in_out(choice):
+            if choice != "Zahlungsart":
+                select_in_out.configure(text_color="white")
+                
+        select_in_out = customtkinter.CTkOptionMenu(master=add_buchung_fenster, values=values, command=check_input_in_out)
         select_in_out.grid(row=2, column=1)
         select_in_out.set("Zahlungsart")
        
@@ -77,11 +84,12 @@ class Popup_Buchung():
 ######## row 4 
         label_kategorien = customtkinter.CTkLabel(add_buchung_fenster, text="Kategorie")
         label_kategorien.grid(row=4, column=0)
+        selected = []
         def create_kat_selection(): # <- erstell die kategorie auswahl (in eine Funktion gepackt, damit man es aktualisieren kann)
             kategorien_ = list(get_kategorien())
             kategorien_.sort()
             kategorien_.insert(0,"Hinzufügen")
-            selected = []
+
             kat_btn_dict = {}
             j=0
             for i in kategorien_:
@@ -104,6 +112,8 @@ class Popup_Buchung():
 ######## row 5 
         label_datum = customtkinter.CTkLabel(add_buchung_fenster, text="Datum")
         label_datum.grid(row=5, column=0)
+        datum = customtkinter.CTkEntry(add_buchung_fenster, placeholder_text="DD.MM.YYYY")
+        datum.grid(row=5, column=1)
 ######## row 6 
         def finish_buchung():
             title_ = title.get()
@@ -129,26 +139,31 @@ class Popup_Buchung():
                 if konto_ == "Wählen sie ein Konto" or konto_ == "Weiteres Konto hinzufügen":
                     select_konto.configure(text_color="red")
                     check_ = False
+                
+                try: # Überprüft, ob das datum im passenden Format ist 
+                    datetime.datetime.strptime(datum.get(), "%d.%m.%Y") #Quelle: https://stackoverflow.com/questions/16870663/how-do-i-validate-a-date-string-format-in-python
+                except ValueError:
+                    datum.configure(text_color="red")
+                    check_ = False
+                    
                 return check_
 
             if check() == True:
-                
                 add_buchung(
                             title=title.get(), 
                             wert=float(wert.get()),
                             buchungs_art="in" if in_out.__contains__("+") else "out", # da die String in der Auswahl (aus Verständnissgründen) nicht der verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
-                            konto=konto_
+                            konto=konto_,
+                            kategorie=selected,
+                            zeitpunkt=datum.get()
                             )
+                self.parent.set_update_buchungen()# update parent ui 
                 add_buchung_fenster.destroy()
 
         fertig_btn = customtkinter.CTkButton(add_buchung_fenster, command=finish_buchung)
         fertig_btn.grid(row=6, sticky="s", column=1)
 
-
-def create_popup_buchung():
-    this = Popup_Buchung()
-    this.create_pop_up_buchung()
-#############################################################################################################################
+####################################################################################
 # erstellt ein Popup-Fenster, um ein Konto hinzuzufügen
 
 
@@ -177,7 +192,7 @@ class Popup_Konto():
             add_konto(name.get(), kontonummer.get())# <--- Fügt ein neues Konto des Konto-Dict zu, mit den Daten der Eingabefelder
             values.insert(len(values)-1, name.get())# <--- Akutalisiert die Kontoliste für das OptionMenus
             parent_optionmenu.configure(values=values)# <--- Aktualisiert das OptionMenu
-
+            parent_optionmenu.set(name.get())
             add_konto_fenster.destroy()                 # <--- Schließt das Popup-Fenster
 
         complete_button = customtkinter.CTkButton(master=add_konto_fenster, text="Konto hinzufügen", command=complete_add_konto)
