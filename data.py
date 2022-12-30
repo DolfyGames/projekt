@@ -1,6 +1,6 @@
 import json
 konten = []
-kategorien = []
+kategorien = ["Test1","Test2"]
 buchungen = [{"title": "title",
               "wert": "wert",
               "buchungs_art": "in",
@@ -48,10 +48,13 @@ def add_buchung(title, wert, buchungs_art, konto, kategorie, zeitpunkt):
 def add_konto(name, kontonummer):
     konten.append({"name": name, "kontonummer": kontonummer})
 
+
+def add_kategorie(name):
+    kategorien.append(name)
+    print(kategorien) # muss wieder weg
+    
 # ermöglich daten zu ändern oder zu entfernen
 # changes ist entweder remove oder die komplette buchung mit den änderungen
-
-
 def edit_remove_buchung(buchung, changes):
     if changes == "remove":
         buchungen.remove(buchung)

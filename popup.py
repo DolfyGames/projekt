@@ -1,51 +1,62 @@
 import customtkinter
-from data import add_buchung, add_konto, get_konten
+from data import add_buchung, add_konto, get_konten, get_kategorien, add_kategorie
 
 # erstellt ein Popup-Fenster, um eine Buchunghinzuzufügen
-
+# Quelle:
+        # https://github.com/TomSchimansky/CustomTkinter (dokumentation zu customtkiner)
+        # https://docs.python.org/3/library/tk.html (dokumentation tkinter)
 
 class Popup_Buchung():
     def create_pop_up_buchung(self):
         add_buchung_fenster = customtkinter.CTkToplevel()
-        add_buchung_fenster.geometry("500x400")
+        add_buchung_fenster.geometry("700x500")
         label = customtkinter.CTkLabel(add_buchung_fenster, text="Buchung hinzufügen")
         label.grid(row=0, column=1)
-########
+######## row 1
         label_title = customtkinter.CTkLabel(add_buchung_fenster, text="Titel")
         label_title.grid(row=1, column=0)
         title = customtkinter.CTkEntry(add_buchung_fenster, placeholder_text="Titel")
         title.grid(row=1, column=1)
-########
+######## row 2
         label_wert = customtkinter.CTkLabel(add_buchung_fenster, text="Wert")
         label_wert.grid(row=2, column=0)
         values = ["Einzahlung (+)", "Zahlungsart", "Auszahlung (-)"]
         select_in_out = customtkinter.CTkOptionMenu(master=add_buchung_fenster, values=values)
         select_in_out.grid(row=2, column=1)
         select_in_out.set("Zahlungsart")
-########        
+       
         # sorgt dafür, dass nur floats eingetragen werden können
-        def check_input(old, new,status, place_holder_text):
-            # Quelle: https://stackoverflow.com/questions/1265665/how-can-i-check-if-a-string-represents-an-int-without-using-try-except
-            if new == place_holder_text:
+        def check_input(old, new,status,position, place_holder_text):
+            if new == place_holder_text: # erlaubt den Platzhalter im eingabefeld 
                 return True
-            elif new == ".": # überprüft die Anzahl der Punkte im String 
-                if status == "1":
-                    if (old+new).count(".") > 1:
+            elif new == ".": # erlaubt es Punkte einzugeben (da man sonst keine floats eingeben könnte (1. != float -> wäre ohne dies nicht möglich))
+                if status == "1": # ermöglicht das löschen des punktes (1 = eingabe; 0 = löschung) -> überprüft nur die Anzahl der Punkte bei einer Eingabe
+                    if (old+new).count(".") > 1:  # überprüft die Anzahl der Punkte im String und verhindert, dass mehr als 2 dort eingegeben werden
                         return False
                 return True
-            else:
-                try:
+            else:               # wenn alle oberen anforderungen erfüllt sind wird final geprüft, ob der eingegebene wert einem float entspricht
+                try:             # Quelle: https://stackoverflow.com/questions/1265665/how-can-i-check-if-a-string-represents-an-int-without-using-try-except
                     float(old+new)
-                    wert.configure(text_color="white")
-                    return True
+                    eingabe_string = old+new
+                    if eingabe_string.count(".")!=0:
+                        if (int(position) - eingabe_string.index(".")) <= 2: # limitiert die eingabe auf 2 nachkommastellen    # Quelle https://www.programiz.com/python-programming/methods/string/index
+                            wert.configure(text_color="white")
+                            return True
+                        else:
+                            wert.configure(text_color="red")
+                            return False
+                    else: 
+                        return True
                 except ValueError:
                     wert.configure(text_color="red")
                     return False
         # Quelle: https://www.geeksforgeeks.org/python-tkinter-validating-entry-widget/
         check_input = add_buchung_fenster.register(check_input)
-        wert = customtkinter.CTkEntry(add_buchung_fenster, placeholder_text="Wert",validate="key", validatecommand=(check_input, "%s", "%S", "%d","Wert"))
+        wert = customtkinter.CTkEntry(add_buchung_fenster, placeholder_text="Wert",validate="key", validatecommand=(check_input, "%s", "%S", "%d","%i","Wert"))
         wert.grid(row=2, column=2)
-########
+        label_währung = customtkinter.CTkLabel(add_buchung_fenster, text="Euro")
+        label_währung.grid(row=2, column=3)
+######## row 3
         label_konto = customtkinter.CTkLabel(add_buchung_fenster, text="Konto")
         label_konto.grid(row=3, column=0)
         def set_selected(choice):
@@ -63,17 +74,37 @@ class Popup_Buchung():
         select_konto = customtkinter.CTkOptionMenu(master=add_buchung_fenster, values=values_, command=set_selected)
         select_konto.grid(row=3, column=1)
         select_konto.set("Wählen sie ein Konto")
-########
+######## row 4 
         label_kategorien = customtkinter.CTkLabel(add_buchung_fenster, text="Kategorie")
         label_kategorien.grid(row=4, column=0)
-        
-        kategorien_combobox = customtkinter.CTkComboBox(master=add_buchung_fenster, values=["Test"])
-        kategorien_combobox.grid(row=4, column=1)
-        kategorien_combobox.set("Test")
-########
+        def create_kat_selection(): # <- erstell die kategorie auswahl (in eine Funktion gepackt, damit man es aktualisieren kann)
+            kategorien_ = list(get_kategorien())
+            kategorien_.sort()
+            kategorien_.insert(0,"Hinzufügen")
+            selected = []
+            kat_btn_dict = {}
+            j=0
+            for i in kategorien_:
+                j+=1
+                def clicked_kategorie(name=i, id=j):
+                    if name == "Hinzufügen":
+                        neue_kategorie = customtkinter.CTkInputDialog(title="Kategorie hinzufügen", text="Benennen sie die neue Kategorie")
+                        add_kategorie(neue_kategorie.get_input())
+                        create_kat_selection()
+                    elif kat_btn_dict[id].cget("fg_color")=="transparent":    
+                        selected.append(name)
+                        kat_btn_dict[id].configure(fg_color="blue")
+                    else:
+                        selected.remove(name)
+                        kat_btn_dict[id].configure(fg_color="transparent")
+                    
+                kat_btn_dict[j] = customtkinter.CTkButton(master=add_buchung_fenster, text=i, fg_color="transparent", font=("TkDefaultFont", 12), width=50, height=14, command=clicked_kategorie, border_color="white", border_width=1)
+                kat_btn_dict[j].grid(row = 4, column=j)  
+        create_kat_selection()  
+######## row 5 
         label_datum = customtkinter.CTkLabel(add_buchung_fenster, text="Datum")
         label_datum.grid(row=5, column=0)
-########
+######## row 6 
         def finish_buchung():
             title_ = title.get()
             in_out = select_in_out.get()
@@ -105,7 +136,7 @@ class Popup_Buchung():
                 add_buchung(
                             title=title.get(), 
                             wert=float(wert.get()),
-                            buchungs_art=in_out.__contains__("+") ? "in":"out", # da die String in der Auswahl (aus Verständnissgründen) nicht der verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
+                            buchungs_art="in" if in_out.__contains__("+") else "out", # da die String in der Auswahl (aus Verständnissgründen) nicht der verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
                             konto=konto_
                             )
                 add_buchung_fenster.destroy()
