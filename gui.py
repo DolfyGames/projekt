@@ -11,7 +11,7 @@ class Gui():
         self.height = height
         self.existierende_objecte = {}
 
-            
+#########################################################################################################################################          
     # erstellt und aktualisiert die Buchungslistenansicht
     def set_update_buchungen(self):
         buchungen = list(get_buchungen())
@@ -20,20 +20,23 @@ class Gui():
         for objects in self.existierende_objecte:
             self.existierende_objecte[objects].destroy()
             
-        for i in buchungen:
+        for buchung in buchungen:
             j+=1
-            if i["buchungs_art"] == "in":
+            if buchung["buchungs_art"] == "in":
                     color = "#49705c"
             else:
                 color = "#824e5e"
             self.existierende_objecte[j]= customtkinter.CTkFrame(self.frame1, fg_color=color,corner_radius=2)
             self.existierende_objecte[j].pack()
             buchungs_infos = customtkinter.CTkTextbox(self.existierende_objecte[j], width=450, height=60, fg_color="transparent")
-            buchungs_infos.insert("0.0", i["title"]+"\n"+str(i["wert"])+" €")
+            buchungs_infos.insert("0.0", buchung["title"]+"\n"+str(f'{buchung["wert"]:.2f}')+" €") #Quelle: https://bobbyhadz.com/blog/python-convert-float-to-string-with-precision
 
             buchungs_infos.configure(state="disabled")
             buchungs_infos.pack()
         print(self.existierende_objecte)
+        
+########################################################################################################################################
+
     def create_gui(self):
         # https://github.com/TomSchimansky/CustomTkinter dokumentation zu customtkiner
         # https://docs.python.org/3/library/tk.html dokumentation tkinter

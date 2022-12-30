@@ -1,14 +1,15 @@
 import json
+import os 
 konten = []
 kategorien = ["Test1","Test2"]
 buchungen = [{"title": "title",
-              "wert": "wert",
+              "wert": 12.00,
               "buchungs_art": "in",
               "konto": "konto",
               "kategorie": [],
               "zeitpunkt":"zeitpunkt"},
              {"title": "title",
-              "wert": "wert", 
+              "wert": 12.00, 
               "buchungs_art": "out",
                 "konto": "konto",
                  "kategorie": [],
@@ -18,6 +19,7 @@ alles = {"konten": konten, "kategorien": kategorien, "buchungen": buchungen}
 
 
 def load():
+    
     # Öffne die Datei zum Lesen
     with open("data.json", "r") as file:
         # Laden der Daten aus der Datei
