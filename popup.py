@@ -158,6 +158,7 @@ class Popup_Buchung():
                             zeitpunkt=datum.get()
                             )
                 self.parent.set_update_buchungen()# update parent ui 
+                self.parent.set_update_kontostand()
                 add_buchung_fenster.destroy()
 
         fertig_btn = customtkinter.CTkButton(add_buchung_fenster, command=finish_buchung)

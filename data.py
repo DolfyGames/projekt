@@ -3,7 +3,7 @@ import os
 konten = []
 kategorien = ["Test1","Test2"]
 buchungen = [{"title": "title",
-              "wert": 12.00,
+              "wert": 11.00,
               "buchungs_art": "in",
               "konto": "konto",
               "kategorie": [],
@@ -77,3 +77,20 @@ def get_konten():
 
 def get_kategorien():
     return kategorien
+
+
+def get_kontostand():
+    return calc_kontostand()
+
+def calc_kontostand():
+    kontostand=0
+    for buchung in buchungen:
+        if buchung["buchungs_art"] == "in":
+            kontostand += buchung["wert"]
+        else:
+            kontostand -= buchung["wert"]
+            
+    return kontostand
+    
+    
+    
