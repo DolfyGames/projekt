@@ -1,14 +1,14 @@
 import customtkinter
 import datetime
-from data import add_buchung, add_konto, get_konten, get_kategorien, add_kategorie
 # erstellt ein Popup-Fenster, um eine Buchunghinzuzufügen
 # Quelle:
         # https://github.com/TomSchimansky/CustomTkinter (dokumentation zu customtkiner)
         # https://docs.python.org/3/library/tk.html (dokumentation tkinter)
 
 class Popup_Buchung():
-    def __init__(self, parent):
+    def __init__(self, parent, datamanager):
         self.parent = parent
+        self.datamanager = datamanager
     
     def create_pop_up_buchung(self):
         add_buchung_fenster = customtkinter.CTkToplevel()
@@ -69,11 +69,11 @@ class Popup_Buchung():
         def set_selected(choice):
             if choice == "Weiteres Konto hinzufügen":
                 konto_popup = Popup_Konto()
-                konto_popup.create_pop_up_konto(values=values_, parent_optionmenu=select_konto)
+                konto_popup.create_pop_up_konto(values=values_, parent_optionmenu=select_konto, datamanager = self.datamanager)
 
             if choice != "Wählen sie ein Konto" and choice != "Weiteres Konto hinzufügen":
                 select_konto.configure(text_color="white")
-        konten = get_konten()
+        konten = list(map(lambda x: x["name"],self.datamanager.get_konten()))
         select_konto = customtkinter.StringVar(value="Wählen sie ein Konto")
         values_ = ["Wählen sie ein Konto"]
         values_.extend(konten)
@@ -86,7 +86,7 @@ class Popup_Buchung():
         label_kategorien.grid(row=4, column=0)
         selected = []
         def create_kat_selection(): # <- erstell die kategorie auswahl (in eine Funktion gepackt, damit man es aktualisieren kann)
-            kategorien_ = list(get_kategorien())
+            kategorien_ = list(self.datamanager.get_kategorien())
             kategorien_.sort()
             kategorien_.insert(0,"Hinzufügen")
 
@@ -97,7 +97,7 @@ class Popup_Buchung():
                 def clicked_kategorie(name=i, id=j):
                     if name == "Hinzufügen":
                         neue_kategorie = customtkinter.CTkInputDialog(title="Kategorie hinzufügen", text="Benennen sie die neue Kategorie")
-                        add_kategorie(neue_kategorie.get_input())
+                        self.datamanager.add_kategorie(neue_kategorie.get_input())
                         create_kat_selection()
                     elif kat_btn_dict[id].cget("fg_color")=="transparent":    
                         selected.append(name)
@@ -149,7 +149,7 @@ class Popup_Buchung():
                 return check_
 
             if check() == True:
-                add_buchung(
+                self.datamanager.add_buchung(
                             title=title.get(), 
                             wert=float(wert.get()),
                             buchungs_art="in" if in_out.__contains__("+") else "out", # da die String in der Auswahl (aus Verständnissgründen) nicht der verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
@@ -169,7 +169,7 @@ class Popup_Buchung():
 
 
 class Popup_Konto():
-    def create_pop_up_konto(self, values, parent_optionmenu):
+    def create_pop_up_konto(self, values, parent_optionmenu, datamanager):
         # instanziierte das Popup-Fenster und setzt die größe Fest
         add_konto_fenster = customtkinter.CTkToplevel()
         add_konto_fenster.geometry("500x200")
@@ -190,7 +190,7 @@ class Popup_Konto():
 
         # Funktion, um das neue Konto hinzufügen
         def complete_add_konto():
-            add_konto(name.get(), kontonummer.get())# <--- Fügt ein neues Konto des Konto-Dict zu, mit den Daten der Eingabefelder
+            datamanager.add_konto(name.get(), kontonummer.get())# <--- Fügt ein neues Konto des Konto-Dict zu, mit den Daten der Eingabefelder
             values.insert(len(values)-1, name.get())# <--- Akutalisiert die Kontoliste für das OptionMenus
             parent_optionmenu.configure(values=values)# <--- Aktualisiert das OptionMenu
             parent_optionmenu.set(name.get())

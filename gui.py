@@ -1,20 +1,20 @@
 import customtkinter
-from data import get_buchungen, get_kontostand
 import popup
 
 # erstellt die komplette Benutzeroberfläche
 
 
 class Gui():
-    def __init__(self, width, height):
+    def __init__(self, width, height, datamanager):
         self.width = width
         self.height = height
         self.existierende_objecte = {}
+        self.datamanager = datamanager
 
 #########################################################################################################################################          
     # erstellt und aktualisiert die Buchungslistenansicht
     def set_update_buchungen(self):
-        buchungen = list(get_buchungen())
+        buchungen = list(self.datamanager.get_buchungen())
         j=0
 
         for objects in self.existierende_objecte:
@@ -29,18 +29,18 @@ class Gui():
             self.existierende_objecte[j]= customtkinter.CTkFrame(self.frame1, fg_color=color,corner_radius=2)
             self.existierende_objecte[j].pack(padx=2,pady=2)
             buchungs_infos = customtkinter.CTkTextbox(self.existierende_objecte[j], width=450, height=80, fg_color="transparent")
-            buchungs_infos.insert("0.0", buchung["title"]+"\n\n"+"Wert: "+str(f'{buchung["wert"]:.2f}')+" €"+"             "+"Konto: "+buchung["konto"]+"              "+"Datum: "+buchung["zeitpunkt"]) #Quelle: https://bobbyhadz.com/blog/python-convert-float-to-string-with-precision
+            buchungs_infos.insert("0.0", buchung["title"]+"\n\n"+"Wert: "+str(f'{buchung["wert"]:.2f}')+" €"+"             "+"Konto: "+buchung["konto"]+"              "+"Datum: "+buchung["zeitpunkt"]+"\n"+"Kategorien: "+ '; '.join(buchung["kategorie"])) #Quelle: https://bobbyhadz.com/blog/python-convert-float-to-string-with-precision
 
             buchungs_infos.configure(state="disabled")
             buchungs_infos.pack(padx=2,pady=2)
-        print(self.existierende_objecte)
+
         
 ########################################################################################################################################
     def set_update_kontostand(self):
-        self.kontostand_.set(str(f'{get_kontostand():.2f}'+" €"))
-        if get_kontostand()>0:
+        self.kontostand_.set(str(f'{self.datamanager.get_kontostand():.2f}'+" €"))
+        if self.datamanager.get_kontostand()>0:
             color = "green"
-        elif get_kontostand()<0:
+        elif self.datamanager.get_kontostand()<0:
             color="red"
         else:
             color="white"
@@ -56,7 +56,7 @@ class Gui():
 
         # erstellt ein Popup, um eine Buchung hinzuzufügen
         def add_buchung():
-            this = popup.Popup_Buchung(parent=self)
+            this = popup.Popup_Buchung(parent=self, datamanager=self.datamanager)
             this.create_pop_up_buchung()
 
 
@@ -69,7 +69,47 @@ class Gui():
         
         sidepanel = customtkinter.CTkFrame(master=app, height=1060,width=350)
         sidepanel.grid(row=0,column=0,padx=10,pady=10)
-
+        
+        sortieren = customtkinter.CTkFrame(master=sidepanel)
+        sortieren.grid(row=0,column=0)
+        sort_label = customtkinter.CTkLabel(sortieren,text="Sortieren nach: ")
+        sort_label.grid(row=0,column=0,padx=5,pady=5)
+        
+        select_var = customtkinter.StringVar()
+        self.is_selected = ""
+        def clicked():
+            
+            val = select_var.get()
+            if val != self.is_selected:
+                self.is_selected = val
+                if val == "wert_auf":
+                    self.datamanager.sort("wert",False)
+                elif val == "wert_ab":
+                    self.datamanager.sort("wert",True)
+                elif val == "neu":
+                    self.datamanager.sort("zeitpunkt",True)
+                else:
+                    self.datamanager.sort("zeitpunkt",False)
+            else:
+                self.datamanager.sort("off",False)
+                select_var.set("")
+            self.set_update_buchungen()
+        
+        sort_label_wert = customtkinter.CTkLabel(sortieren,text="Wert: ")
+        sort_label_wert.grid(row=1,column=0)
+        wert_aufsteigend = customtkinter.CTkRadioButton(sortieren,text="Aufstiegend",variable=select_var,value="wert_auf", command=clicked)
+        wert_aufsteigend.grid(row=1,column=1)
+        
+        wert_absteigend = customtkinter.CTkRadioButton(sortieren,text="Abtiegend",variable=select_var,value="wert_ab", command=clicked)
+        wert_absteigend.grid(row=1,column=2)
+        
+        sort_label_datum = customtkinter.CTkLabel(sortieren,text="Datum")
+        sort_label_datum.grid(row=2,column=0)
+        datum_neu = customtkinter.CTkRadioButton(sortieren,text="Neu->Alt",variable=select_var,value="neu", command=clicked)
+        datum_neu.grid(row=2,column=1)
+        datum_alt = customtkinter.CTkRadioButton(sortieren,text="Alt->Neu",variable=select_var,value="alt", command=clicked)
+        datum_alt.grid(row=2,column=2)
+####
         finanz_übersicht =  customtkinter.CTkFrame(master=app,height=1060,width=700)
         finanz_übersicht.grid(row=0,column=1,padx=10,pady=10)
         
@@ -101,6 +141,7 @@ class Gui():
 
         # hiermit kann man das Programm schließen und man kann hier später auch noch eine Funktion zum Speichern aufrufen, bevor das Fenster geschlossen wird
         def disable_event():
+            self.datamanager.save()
             app.destroy()
         app.protocol("WM_DELETE_WINDOW", disable_event)
 
