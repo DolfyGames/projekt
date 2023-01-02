@@ -47,7 +47,36 @@ class Gui():
         
         
         self.kontostand.configure(text_color=color)
-
+#########################################################################################################################################
+    def set_update_filter(self):
+        konten = self.datamanager.get_konten()
+        kategorien = self.datamanager.get_kategorien()
+        filter_checkbox = {}
+        filter_val = {}
+        j = 2 #  n um die Checkboxen in die passenden Zeilen zu packen
+        filtern_label_konten = customtkinter.CTkLabel(self.filtern,text="Konten")
+        filtern_label_konten.grid(row=1,column=0,padx=5,pady=5)
+        for i in konten:
+            def checked(val=i["name"], j_=j):
+                self.datamanager.filtern(key=val, state=filter_val[j_].get())
+            
+            filter_val[j] = customtkinter.BooleanVar()
+            filter_checkbox[j] = customtkinter.CTkCheckBox(self.filtern,text=i["name"],command=checked, variable=filter_val[j], onvalue=True, offvalue=False)
+            filter_checkbox[j].grid(row=j,column=0, padx=5,pady=2) # + n um die Checkboxen in die passenden Zeilen zu packen
+            j += 1
+            
+        filtern_label_kategorien = customtkinter.CTkLabel(self.filtern,text="Kategorien")
+        filtern_label_kategorien.grid(row=j,column=0,padx=5,pady=5)
+        j+=1
+        for i in kategorien:
+            def checked(val=i, j_=j):
+                self.datamanager.filtern(key=val, state=filter_val[j_].get())
+            
+            filter_val[j] = customtkinter.BooleanVar()
+            filter_checkbox[j] = customtkinter.CTkCheckBox(self.filtern,text=i,command=checked, variable=filter_val[j], onvalue=True, offvalue=False)
+            filter_checkbox[j].grid(row=j+2,column=0, padx=5,pady=2) # + n um die Checkboxen in die passenden Zeilen zu packen
+            j += 1
+#########################################################################################################################################
         
     
     def create_gui(self):
@@ -56,7 +85,7 @@ class Gui():
 
         # erstellt ein Popup, um eine Buchung hinzuzufügen
         def add_buchung():
-            this = popup.Popup_Buchung(parent=self, datamanager=self.datamanager)
+            this = popup.Popup_Buchung( datamanager=self.datamanager)
             this.create_pop_up_buchung()
 
 
@@ -69,16 +98,16 @@ class Gui():
         
         sidepanel = customtkinter.CTkFrame(master=app, height=1060,width=350)
         sidepanel.grid(row=0,column=0,padx=10,pady=10)
-        
+#####        
         sortieren = customtkinter.CTkFrame(master=sidepanel)
-        sortieren.grid(row=0,column=0)
+        sortieren.grid(row=0,column=0,padx=5,pady=5)
         sort_label = customtkinter.CTkLabel(sortieren,text="Sortieren nach: ")
         sort_label.grid(row=0,column=0,padx=5,pady=5)
         
         select_var = customtkinter.StringVar()
         self.is_selected = ""
         def clicked():
-            
+        # je nach angeklickten radiobutton werden die Buchungen danach dem kriterium sortiert    
             val = select_var.get()
             if val != self.is_selected:
                 self.is_selected = val
@@ -93,7 +122,6 @@ class Gui():
             else:
                 self.datamanager.sort("off",False)
                 select_var.set("")
-            self.set_update_buchungen()
         
         sort_label_wert = customtkinter.CTkLabel(sortieren,text="Wert: ")
         sort_label_wert.grid(row=1,column=0)
@@ -109,7 +137,14 @@ class Gui():
         datum_neu.grid(row=2,column=1)
         datum_alt = customtkinter.CTkRadioButton(sortieren,text="Alt->Neu",variable=select_var,value="alt", command=clicked)
         datum_alt.grid(row=2,column=2)
-####
+#####
+        self.filtern = customtkinter.CTkFrame(master=sidepanel)
+        self.filtern.grid(row=1,column=0,padx=5,pady=5)
+        filtern_label = customtkinter.CTkLabel(self.filtern,text="Filter")
+        filtern_label.grid(row=0,column=0,padx=5,pady=5)
+
+        self.set_update_filter()
+#####
         finanz_übersicht =  customtkinter.CTkFrame(master=app,height=1060,width=700)
         finanz_übersicht.grid(row=0,column=1,padx=10,pady=10)
         

@@ -6,8 +6,7 @@ import datetime
         # https://docs.python.org/3/library/tk.html (dokumentation tkinter)
 
 class Popup_Buchung():
-    def __init__(self, parent, datamanager):
-        self.parent = parent
+    def __init__(self, datamanager):
         self.datamanager = datamanager
     
     def create_pop_up_buchung(self):
@@ -157,8 +156,6 @@ class Popup_Buchung():
                             kategorie=selected,
                             zeitpunkt=datum.get()
                             )
-                self.parent.set_update_buchungen()# update parent ui 
-                self.parent.set_update_kontostand()
                 add_buchung_fenster.destroy()
 
         fertig_btn = customtkinter.CTkButton(add_buchung_fenster, command=finish_buchung)
