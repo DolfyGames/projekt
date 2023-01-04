@@ -1,5 +1,6 @@
 import customtkinter
 import popup
+from PIL import Image
 
 # erstellt die komplette Benutzeroberfläche
 
@@ -21,19 +22,30 @@ class Gui():
             self.existierende_objecte[objects].destroy()
             
         for buchung in buchungen:
-            j+=1
+
             if buchung["buchungs_art"] == "in":
                     color = "green"
             else:
                 color = "red"
+
+            def edit(buchung_ = buchung):
+                edit_popup = popup.Popup_Buchung(datamanager=self.datamanager,buchung=buchung_)
+                edit_popup.create_pop_up_buchung()
+
             self.existierende_objecte[j]= customtkinter.CTkFrame(self.frame1, fg_color=color,corner_radius=2)
             self.existierende_objecte[j].pack(padx=2,pady=2)
             buchungs_infos = customtkinter.CTkTextbox(self.existierende_objecte[j], width=450, height=80, fg_color="transparent")
             buchungs_infos.insert("0.0", buchung["title"]+"\n\n"+"Wert: "+str(f'{buchung["wert"]:.2f}')+" €"+"             "+"Konto: "+buchung["konto"]+"              "+"Datum: "+buchung["zeitpunkt"]+"\n"+"Kategorien: "+ '; '.join(buchung["kategorie"])) #Quelle: https://bobbyhadz.com/blog/python-convert-float-to-string-with-precision
 
             buchungs_infos.configure(state="disabled")
-            buchungs_infos.pack(padx=2,pady=2)
+            buchungs_infos.grid(row=0,column=0,padx=2,pady=2)
 
+            edit_btn = {}
+
+            zahnrad = customtkinter.CTkImage(dark_image=Image.open("R.png"),size=(30,30))
+            edit_btn[j] = customtkinter.CTkButton(self.existierende_objecte[j], width=80, height=80, image=zahnrad, fg_color="transparent",text="", command=edit)
+            edit_btn[j].grid(row=0,column=1,padx=2,pady=2)
+            j+=1
         
 ########################################################################################################################################
     def set_update_kontostand(self):

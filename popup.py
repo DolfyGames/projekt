@@ -6,9 +6,9 @@ import datetime
         # https://docs.python.org/3/library/tk.html (dokumentation tkinter)
 
 class Popup_Buchung():
-    def __init__(self, datamanager):
+    def __init__(self, datamanager,buchung=None):
         self.datamanager = datamanager
-    
+        self.buchung = buchung
     def create_pop_up_buchung(self):
         add_buchung_fenster = customtkinter.CTkToplevel()
         add_buchung_fenster.geometry("700x500")
