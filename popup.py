@@ -161,6 +161,11 @@ class Popup_Buchung():
         fertig_btn = customtkinter.CTkButton(add_buchung_fenster, command=finish_buchung)
         fertig_btn.grid(row=6, sticky="s", column=1)
 
+
+        if self.buchung != None:
+            title.configure(text=self.buchung["titel"])
+            select_in_out.set("Einzahlung (+)" if self.buchung["buchungs_art"] else "Auszahlung (-)")
+            wert.configure(text=buchung["wert"])
 ####################################################################################
 # erstellt ein Popup-Fenster, um ein Konto hinzuzufügen
 
