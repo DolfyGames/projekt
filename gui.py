@@ -42,7 +42,7 @@ class Gui():
 
             edit_btn = {}
 
-            zahnrad = customtkinter.CTkImage(dark_image=Image.open("R.png"),size=(30,30))
+            zahnrad = customtkinter.CTkImage(dark_image=Image.open("edit.png"),size=(30,30))
             edit_btn[j] = customtkinter.CTkButton(self.existierende_objecte[j], width=80, height=80, image=zahnrad, fg_color="transparent",text="", command=edit)
             edit_btn[j].grid(row=0,column=1,padx=2,pady=2)
             j+=1

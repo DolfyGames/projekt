@@ -85,29 +85,30 @@ class Popup_Buchung():
         label_kategorien.grid(row=4, column=0)
         selected = []
         def create_kat_selection(): # <- erstell die kategorie auswahl (in eine Funktion gepackt, damit man es aktualisieren kann)
-            kategorien_ = list(self.datamanager.get_kategorien())
-            kategorien_.sort()
-            kategorien_.insert(0,"Hinzufügen")
+            self.kategorien_ = list(self.datamanager.get_kategorien())
+            self.kategorien_.sort()
+            self.kategorien_.insert(0,"Hinzufügen")
 
-            kat_btn_dict = {}
+            self.kat_btn_dict = {}
             j=0
-            for i in kategorien_:
+            for i in self.kategorien_:
                 j+=1
                 def clicked_kategorie(name=i, id=j):
                     if name == "Hinzufügen":
                         neue_kategorie = customtkinter.CTkInputDialog(title="Kategorie hinzufügen", text="Benennen sie die neue Kategorie")
                         self.datamanager.add_kategorie(neue_kategorie.get_input())
                         create_kat_selection()
-                    elif kat_btn_dict[id].cget("fg_color")=="transparent":    
+                    elif self.kat_btn_dict[id].cget("fg_color")=="transparent":    
                         selected.append(name)
-                        kat_btn_dict[id].configure(fg_color="blue")
+                        self.kat_btn_dict[id].configure(fg_color="blue")
                     else:
                         selected.remove(name)
-                        kat_btn_dict[id].configure(fg_color="transparent")
+                        self.kat_btn_dict[id].configure(fg_color="transparent")
                     
-                kat_btn_dict[j] = customtkinter.CTkButton(master=add_buchung_fenster, text=i, fg_color="transparent", font=("TkDefaultFont", 12), width=50, height=14, command=clicked_kategorie, border_color="white", border_width=1)
-                kat_btn_dict[j].grid(row = 4, column=j)  
+                self.kat_btn_dict[j] = customtkinter.CTkButton(master=add_buchung_fenster, text=i, fg_color="transparent", font=("TkDefaultFont", 12), width=50, height=14, command=clicked_kategorie, border_color="white", border_width=1)
+                self.kat_btn_dict[j].grid(row = 4, column=j)  
         create_kat_selection()  
+
 ######## row 5 
         label_datum = customtkinter.CTkLabel(add_buchung_fenster, text="Datum")
         label_datum.grid(row=5, column=0)
@@ -148,24 +149,49 @@ class Popup_Buchung():
                 return check_
 
             if check() == True:
-                self.datamanager.add_buchung(
-                            title=title.get(), 
-                            wert=float(wert.get()),
-                            buchungs_art="in" if in_out.__contains__("+") else "out", # da die String in der Auswahl (aus Verständnissgründen) nicht der verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
-                            konto=konto_,
-                            kategorie=selected,
-                            zeitpunkt=datum.get()
-                            )
-                add_buchung_fenster.destroy()
+                if self.buchung == None:
+                    self.datamanager.add_buchung(
+                                title=title.get(), 
+                                wert=float(wert.get()),
+                                buchungs_art="in" if in_out.__contains__("+") else "out", # da die String in der Auswahl (aus Verständnissgründen) nicht der verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
+                                konto=konto_,
+                                kategorie=selected,
+                                zeitpunkt=datum.get()
+                                )
+                    add_buchung_fenster.destroy()
+                else:
+                    neu ={
+                                "title":title.get(), 
+                                "wert":float(wert.get()),
+                                "buchungs_art":"in" if in_out.__contains__("+") else "out", # da die String in der Auswahl (aus Verständnissgründen) nicht der verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
+                                "konto":konto_,
+                                "kategorie":selected,
+                                "zeitpunkt":datum.get()
+                    }
+                    self.datamanager.edit_remove_buchung(self.buchung,neu)
+                    add_buchung_fenster.destroy()
 
-        fertig_btn = customtkinter.CTkButton(add_buchung_fenster, command=finish_buchung)
+
+        fertig_btn = customtkinter.CTkButton(add_buchung_fenster,text="Fertig", command=finish_buchung)
         fertig_btn.grid(row=6, sticky="s", column=1)
 
-
         if self.buchung != None:
-            title.configure(text=self.buchung["titel"])
-            select_in_out.set("Einzahlung (+)" if self.buchung["buchungs_art"] else "Auszahlung (-)")
-            wert.configure(text=buchung["wert"])
+            title.insert(0,self.buchung["title"])
+            select_in_out.set("Einzahlung (+)" if self.buchung["buchungs_art"] else "Auszahlung (-)") # in-line if else
+            wert.insert(0,str(f'{self.buchung["wert"]:.2f}'))
+            select_konto.set(self.buchung["konto"])
+            for kats in self.buchung["kategorie"]:
+                self.kat_btn_dict[self.kategorien_.index(kats)+1].configure(fg_color="blue")
+                selected.append(kats)
+            datum.insert(0,self.buchung["zeitpunkt"])
+            
+            def löschen():
+                self.datamanager.edit_remove_buchung(self.buchung)
+                add_buchung_fenster.destroy()
+                
+            löschen_btn = customtkinter.CTkButton(add_buchung_fenster,text="Löschen", command=löschen, fg_color="red")
+            löschen_btn.grid(row=6, sticky="s", column=2)
+
 ####################################################################################
 # erstellt ein Popup-Fenster, um ein Konto hinzuzufügen
 

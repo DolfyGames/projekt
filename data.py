@@ -5,19 +5,8 @@ import datetime
 class Data():
     def __init__(self):
         self.konten = []
-        self.kategorien = ["Test1","Test2"]
-        self.buchungen = [{"title": "title",
-                    "wert": 11.00,
-                    "buchungs_art": "in",
-                    "konto": "konto",
-                    "kategorie": ["Test1"],
-                    "zeitpunkt":"01.02.2012"},
-                    {"title": "title",
-                    "wert": 12.00, 
-                    "buchungs_art": "out",
-                        "konto": "konto",
-                        "kategorie": ["Test2"],
-                        "zeitpunkt":"02.02.2012"}]
+        self.kategorien = []
+        self.buchungen = []
         
         self.sort_state = False
         self.last_sort_paramter = ""
@@ -80,12 +69,20 @@ class Data():
         
     # ermöglich daten zu ändern oder zu entfernen
     # changes ist entweder remove oder die komplette buchung mit den änderungen
-    def edit_remove_buchung(self,buchung, changes):
-        if changes == "remove":
+    def edit_remove_buchung(self,buchung, neu=None):
+        if neu == None:
             self.buchungen.remove(buchung)
         else:
-            self.buchungen[self.buchungen.index(buchung)] = changes
-
+            self.buchungen[self.buchungen.index(buchung)] = neu
+            
+        self.anzeige_liste = list(self.buchungen)
+        if self.sort_state == True:
+            self.sort(self.last_sort_paramter,self.last_sort_reverse)
+        if self.filter_state == True:
+            self.filtern(state=True)
+        
+        self.gui.set_update_buchungen()
+        self.gui.set_update_kontostand()
     def filtern(self,state,key=None):
         if state:
             self.filter_state = True
