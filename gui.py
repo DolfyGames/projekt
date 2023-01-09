@@ -167,7 +167,14 @@ class Gui():
         tool_label.grid(row=0,column=0)
         self.kontostand_ = customtkinter.StringVar()
         self.kontostand = customtkinter.CTkEntry(tool_frame,state="disabled",textvariable=self.kontostand_)
-        self.kontostand.grid(row=1,column=0, columnspan=1)
+        self.kontostand.grid(row=1,column=0, columnspan=1, padx=5)
+
+        def suche():
+            such_wert= tool_suche.get()
+            datamanager.filter(state=True, key=such_wert, such_filter=True)
+
+        tool_suche = customtkinter.CTkEntry(master=tool_frame, placeholder_text="Suche",validate="key", validatecommand=suche)
+        tool_suche.grid(row=1, column=1,padx=5)
 
         self.set_update_kontostand()
 

@@ -1,1 +1,1 @@
-{"konten": [], "kategorien": [], "buchungen": []}
+{"konten": [{"name": "Handkasse", "kontonummer": "1"}], "kategorien": ["Essen"], "buchungen": [{"title": "test", "wert": 10.0, "buchungs_art": "out", "konto": "Handkasse", "kategorie": ["Essen"], "zeitpunkt": "09.01.2023"}]}

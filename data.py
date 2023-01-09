@@ -13,6 +13,7 @@ class Data():
         self.last_sort_reverse = False
         
         self.filter_state = False
+        self.such_filter_state = False
         self.last_filter_parameter = []
 
     def set_gui(self,gui_):
@@ -83,7 +84,7 @@ class Data():
         
         self.gui.set_update_buchungen()
         self.gui.set_update_kontostand()
-    def filtern(self,state,key=None):
+    def filtern(self,state,key=None,such_filter=False): ##### hinweis: die filterfunktion muss angepasst werden, um mit der suche auch filtern zu können
         if state:
             self.filter_state = True
             if key != None:

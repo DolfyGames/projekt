@@ -177,7 +177,7 @@ class Popup_Buchung():
 
         if self.buchung != None:
             title.insert(0,self.buchung["title"])
-            select_in_out.set("Einzahlung (+)" if self.buchung["buchungs_art"] else "Auszahlung (-)") # in-line if else
+            select_in_out.set("Auszahlung (-)" if self.buchung["buchungs_art"] == "out" else "Einzahlung (+)") # in-line if else
             wert.insert(0,str(f'{self.buchung["wert"]:.2f}'))
             select_konto.set(self.buchung["konto"])
             for kats in self.buchung["kategorie"]:
