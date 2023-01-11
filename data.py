@@ -15,6 +15,8 @@ class Data():
         self.filter_state = False
         self.such_filter_state = False
         self.last_filter_parameter = []
+        self.vorheriger_suchwert = None
+        self.such_filter_state = False
 
     def set_gui(self,gui_):
         self.gui = gui_
@@ -84,10 +86,30 @@ class Data():
         
         self.gui.set_update_buchungen()
         self.gui.set_update_kontostand()
-    def filtern(self,state,key=None,such_filter=False): ##### hinweis: die filterfunktion muss angepasst werden, um mit der suche auch filtern zu können
+    def filtern(self,state,key=None,such_filter=False):
+
+        if (such_filter or self.such_filter_state) and (key != None or self.vorheriger_suchwert != None):
+            if self.last_filter_parameter.__contains__(self.vorheriger_suchwert):
+                self.last_filter_parameter.remove(self.vorheriger_suchwert)
+                self.vorheriger_suchwert = key
+                self.last_filter_parameter.append(key)
+                self.filter_state = True
+                self.such_filter_state = True
+            else:
+                self.vorheriger_suchwert = key
+                self.last_filter_parameter.append(key)
+                self.filter_state = True
+                self.such_filter_state = True
+        else:
+            if self.last_filter_parameter.__contains__(self.vorheriger_suchwert):
+                self.last_filter_parameter.remove(self.vorheriger_suchwert)
+            self.filter_state = False
+            self.such_filter_state = False
+            self.vorheriger_suchwert = None
+
         if state:
             self.filter_state = True
-            if key != None:
+            if key != None and such_filter != True:
                 self.last_filter_parameter.append(key)
         else:
             self.anzeige_liste = self.buchungen.copy()
@@ -97,17 +119,17 @@ class Data():
                 
             if self.last_filter_parameter == []:
                 self.filter_state = False
-        
-        if self.filter_state:
 
-            def custom_filter(i):
+        if self.filter_state:
+            print(self.last_filter_parameter)
+            def custom_filter( i):
                 value_list = []                     # wandelt die values des dicts so um (in einen 1 dimensinalen array), sodass man schauen kann, ob ein bestimmter string dort drinnen ist 
                 for obj in list(i.values()):
                     if isinstance(obj,list):
                         value_list.extend(obj)
                     else:
                         value_list.append(obj)
-                        
+                print(self.last_filter_parameter) ### liste ändert sich einfach random
                 if all(filters in value_list for filters in self.last_filter_parameter):    # für filters in der Liste wird überprüft, ob sich dieser String irgendwo in den Werten vom dict wiederfindet   #Quelle: https://stackoverflow.com/questions/405516/if-all-in-list-something                    
                     return True
                 else:
