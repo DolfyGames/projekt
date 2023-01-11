@@ -121,7 +121,7 @@ class Data():
                 self.filter_state = False
 
         if self.filter_state:
-            print(self.last_filter_parameter)
+            print("a:",self.last_filter_parameter)
             def custom_filter( i):
                 value_list = []                     # wandelt die values des dicts so um (in einen 1 dimensinalen array), sodass man schauen kann, ob ein bestimmter string dort drinnen ist 
                 for obj in list(i.values()):
@@ -129,7 +129,7 @@ class Data():
                         value_list.extend(obj)
                     else:
                         value_list.append(obj)
-                print(self.last_filter_parameter) ### liste ändert sich einfach random
+                print("b:",self.last_filter_parameter) ### liste ändert sich einfach random
                 if all(filters in value_list for filters in self.last_filter_parameter):    # für filters in der Liste wird überprüft, ob sich dieser String irgendwo in den Werten vom dict wiederfindet   #Quelle: https://stackoverflow.com/questions/405516/if-all-in-list-something                    
                     return True
                 else:
