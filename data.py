@@ -1,6 +1,7 @@
 import json
 import os 
 import datetime
+import re
 
 class Data():
     def __init__(self):
@@ -122,14 +123,21 @@ class Data():
                 self.filter_state = False
 
         if self.filter_state:
-            def custom_filter( i):
-                value_list = []                     # wandelt die values des dicts so um (in einen 1 dimensinalen array), sodass man schauen kann, ob ein bestimmter string dort drinnen ist 
+            def custom_filter(i):
+                value_list = []     # wandelt die values des dicts so um (in einen 1 dimensinalen array), sodass man schauen kann, ob ein bestimmter string dort drinnen ist
+                bool_list = []
                 for obj in list(i.values()):
                     if isinstance(obj,list):
                         value_list.extend(obj)
                     else:
                         value_list.append(obj)
-                if all(filters in value_list for filters in self.last_filter_parameter):    # für filters in der Liste wird überprüft, ob sich dieser String irgendwo in den Werten vom dict wiederfindet   #Quelle: https://stackoverflow.com/questions/405516/if-all-in-list-something                    
+                for filters in self.last_filter_parameter:
+                    for values in value_list:
+                        if re.search(f'\s{filters}',values):
+                            bool_list.append(True)
+                        else:
+                            bool_list.append(False)
+                if all(bool_list):    # für filters in der Liste wird überprüft, ob sich dieser String irgendwo in den Werten vom dict wiederfindet   #Quelle: https://stackoverflow.com/questions/405516/if-all-in-list-something
                     return True
                 else:
                     return False
