@@ -198,10 +198,12 @@ class Gui():
 
         self.frame1 = customtkinter.CTkFrame(frame)
         self.frame1.grid(row=1, column=0,padx=5,pady=5,sticky="nsew")
-
+        scrollbar = customtkinter.CTkScrollbar(self.frame1, command=self.frame1.yview)
+        self.frame1.configure(yscrollcommand=scrollbar.set)
+        scrollbar.grid(row=0,column=1, sticky="ns")
         self.set_update_buchungen()
         add_button = customtkinter.CTkButton(frame, fg_color="#49705c", hover_color="#59886f", text="+", command=add_buchung)
-        add_button.grid(row=2, column=0)
+        add_button.grid(row=2, column=0, padx=5,pady=5)
 
         # hiermit kann man das Programm schließen und man kann hier später auch noch eine Funktion zum Speichern aufrufen, bevor das Fenster geschlossen wird
         def disable_event():

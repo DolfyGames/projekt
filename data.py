@@ -69,6 +69,7 @@ class Data():
 
     def add_kategorie(self,name):
         self.kategorien.append(name)
+        self.gui.set_update_filter()
 
         
     # ermöglich daten zu ändern oder zu entfernen
