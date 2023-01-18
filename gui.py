@@ -97,7 +97,7 @@ class Gui():
 
         # erstellt ein Popup, um eine Buchung hinzuzufügen
         def add_buchung():
-            this = popup.Popup_Buchung( datamanager=self.datamanager)
+            this = popup.Popup_Buchung(datamanager=self.datamanager)
             this.create_pop_up_buchung()
 
 
@@ -109,14 +109,13 @@ class Gui():
         app.title("Abrechnungstool")
 
         app.grid_rowconfigure(0, weight=1)
-        app.grid_rowconfigure(1, weight=1)
 
-        sidepanel = customtkinter.CTkFrame(master=app, height=1060,width=350)
-        sidepanel.grid(row=0,column=0,padx=10,pady=10)
-        sidepanel.grid_rowconfigure(0,weight=1)
+        sidepanel = customtkinter.CTkFrame(master=app)
+        sidepanel.grid(row=0,column=0,padx=10,pady=10, sticky="nsew")
+        sidepanel.grid_rowconfigure((0,1),weight=1)
 #####        
         sortieren = customtkinter.CTkFrame(master=sidepanel)
-        sortieren.grid(row=0,column=0,padx=5,pady=5)
+        sortieren.grid(row=0,column=0,padx=5,pady=5,sticky="nsew")
         sort_label = customtkinter.CTkLabel(sortieren,text="Sortieren nach: ")
         sort_label.grid(row=0,column=0,padx=5,pady=5)
         
@@ -155,23 +154,24 @@ class Gui():
         datum_alt.grid(row=2,column=2)
 #####
         self.filtern = customtkinter.CTkFrame(master=sidepanel)
-        self.filtern.grid(row=1,column=0,padx=5,pady=5)
+        self.filtern.grid(row=1,column=0,padx=5,pady=5, sticky="nsew")
         filtern_label = customtkinter.CTkLabel(self.filtern,text="Filter")
         filtern_label.grid(row=0,column=0,padx=5,pady=5)
 
         self.set_update_filter()
 #####
         finanz_übersicht =  customtkinter.CTkFrame(master=app,height=1060,width=700)
-        finanz_übersicht.grid(row=0,column=1,padx=10,pady=10)
+        finanz_übersicht.grid(row=0,column=1,padx=10,pady=10, sticky="nsew")
+        finanz_übersicht.grid_rowconfigure(1,weight=1)
         
         tool_frame =  customtkinter.CTkFrame(master=finanz_übersicht)
-        tool_frame.grid(row=0,column=0) 
+        tool_frame.grid(row=0,column=0, sticky="nsew", padx=5, pady=5)
         
         tool_label = customtkinter.CTkLabel(tool_frame,text="Kontostand: Gesammt")
         tool_label.grid(row=0,column=0)
         self.kontostand_ = customtkinter.StringVar()
         self.kontostand = customtkinter.CTkEntry(tool_frame,state="disabled",textvariable=self.kontostand_)
-        self.kontostand.grid(row=1,column=0, columnspan=1, padx=5)
+        self.kontostand.grid(row=1,column=0, columnspan=1, padx=5,pady=5)
 
         def suche(value):
             such_wert = value
@@ -184,24 +184,24 @@ class Gui():
 
         suche = tool_frame.register(suche)
         tool_suche = customtkinter.CTkEntry(master=tool_frame, placeholder_text="Suche",validate="key", validatecommand= (suche, '%P'))
-        tool_suche.grid(row=1, column=1,padx=5)
+        tool_suche.grid(row=1, column=1,padx=5,pady=5)
 
         self.set_update_kontostand()
 
                 
         # Standart Oberflächenitems
         frame = customtkinter.CTkFrame(finanz_übersicht)
-        frame.grid(row=1,column=0,pady=10, padx=10)
-
+        frame.grid(row=1,column=0,pady=10, padx=5, sticky="nsew")
+        frame.grid_rowconfigure(1, weight =1)
         title = customtkinter.CTkLabel(frame, text="Buchungen")
-        title.pack(pady=2, padx=2)
+        title.grid(row=0,column=0,pady=2, padx=2)
 
-        self.frame1 = customtkinter.CTkFrame(frame )
-        self.frame1.pack(pady=5)
+        self.frame1 = customtkinter.CTkFrame(frame)
+        self.frame1.grid(row=1, column=0,padx=5,pady=5,sticky="nsew")
 
         self.set_update_buchungen()
         add_button = customtkinter.CTkButton(frame, fg_color="#49705c", hover_color="#59886f", text="+", command=add_buchung)
-        add_button.pack()
+        add_button.grid(row=2, column=0)
 
         # hiermit kann man das Programm schließen und man kann hier später auch noch eine Funktion zum Speichern aufrufen, bevor das Fenster geschlossen wird
         def disable_event():
