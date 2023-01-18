@@ -132,11 +132,16 @@ class Data():
                     else:
                         value_list.append(obj)
                 for filters in self.last_filter_parameter:
+                    aktueller_filter = []
                     for values in value_list:
-                        if re.search(f'\s{filters}',values):
-                            bool_list.append(True)
+                        if re.search(str(filters),str(values)):
+                            aktueller_filter.append(True)
                         else:
-                            bool_list.append(False)
+                            aktueller_filter.append(False)
+                    if aktueller_filter.__contains__(True):
+                        bool_list.append(True)
+                    else:
+                        bool_list.append(False)
                 if all(bool_list):    # für filters in der Liste wird überprüft, ob sich dieser String irgendwo in den Werten vom dict wiederfindet   #Quelle: https://stackoverflow.com/questions/405516/if-all-in-list-something
                     return True
                 else:

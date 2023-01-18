@@ -107,9 +107,13 @@ class Gui():
         app = customtkinter.CTk()
         app.geometry(self.width+"x"+self.height)
         app.title("Abrechnungstool")
-        
+
+        app.grid_rowconfigure(0, weight=1)
+        app.grid_rowconfigure(1, weight=1)
+
         sidepanel = customtkinter.CTkFrame(master=app, height=1060,width=350)
         sidepanel.grid(row=0,column=0,padx=10,pady=10)
+        sidepanel.grid_rowconfigure(0,weight=1)
 #####        
         sortieren = customtkinter.CTkFrame(master=sidepanel)
         sortieren.grid(row=0,column=0,padx=5,pady=5)
