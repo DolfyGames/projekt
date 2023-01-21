@@ -122,7 +122,8 @@ class Data():
 
         if self.filter_state:
             print("a:",self.last_filter_parameter)
-            def custom_filter( i):
+            def custom_filter(i):
+                print("b:",self.last_filter_parameter) 
                 value_list = []                     # wandelt die values des dicts so um (in einen 1 dimensinalen array), sodass man schauen kann, ob ein bestimmter string dort drinnen ist 
                 for obj in list(i.values()):
                     if isinstance(obj,list):
