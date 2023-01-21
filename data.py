@@ -1,6 +1,7 @@
 import json
 import os 
 import datetime
+import re
 
 class Data():
     def __init__(self):
@@ -68,6 +69,7 @@ class Data():
 
     def add_kategorie(self,name):
         self.kategorien.append(name)
+        self.gui.set_update_filter()
 
         
     # ermöglich daten zu ändern oder zu entfernen
@@ -95,6 +97,7 @@ class Data():
                 self.last_filter_parameter.append(key)
                 self.filter_state = True
                 self.such_filter_state = True
+                self.anzeige_liste = self.buchungen.copy()
             else:
                 self.vorheriger_suchwert = key
                 self.last_filter_parameter.append(key)
@@ -121,17 +124,26 @@ class Data():
                 self.filter_state = False
 
         if self.filter_state:
-            print("a:",self.last_filter_parameter)
             def custom_filter(i):
-                print("b:",self.last_filter_parameter) 
-                value_list = []                     # wandelt die values des dicts so um (in einen 1 dimensinalen array), sodass man schauen kann, ob ein bestimmter string dort drinnen ist 
+                value_list = []     # wandelt die values des dicts so um (in einen 1 dimensinalen array), sodass man schauen kann, ob ein bestimmter string dort drinnen ist
+                bool_list = []
                 for obj in list(i.values()):
                     if isinstance(obj,list):
                         value_list.extend(obj)
                     else:
                         value_list.append(obj)
-                print("b:",self.last_filter_parameter) ### liste ändert sich einfach random
-                if all(filters in value_list for filters in self.last_filter_parameter):    # für filters in der Liste wird überprüft, ob sich dieser String irgendwo in den Werten vom dict wiederfindet   #Quelle: https://stackoverflow.com/questions/405516/if-all-in-list-something                    
+                for filters in self.last_filter_parameter:
+                    aktueller_filter = []
+                    for values in value_list:
+                        if re.search(str(filters),str(values)):
+                            aktueller_filter.append(True)
+                        else:
+                            aktueller_filter.append(False)
+                    if aktueller_filter.__contains__(True):
+                        bool_list.append(True)
+                    else:
+                        bool_list.append(False)
+                if all(bool_list):    # für filters in der Liste wird überprüft, ob sich dieser String irgendwo in den Werten vom dict wiederfindet   #Quelle: https://stackoverflow.com/questions/405516/if-all-in-list-something
                     return True
                 else:
                     return False
