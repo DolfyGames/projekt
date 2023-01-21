@@ -14,10 +14,8 @@ class Data():
         self.last_sort_reverse = False
         
         self.filter_state = False
-        self.such_filter_state = False
         self.last_filter_parameter = []
         self.vorheriger_suchwert = None
-        self.such_filter_state = False
 
     def set_gui(self,gui_):
         self.gui = gui_
@@ -90,31 +88,32 @@ class Data():
         self.gui.set_update_kontostand()
     def filtern(self,state,key=None,such_filter=False):
 
-        if (such_filter or self.such_filter_state) and (key != None or self.vorheriger_suchwert != None):
+        if (such_filter) and (key != None or self.vorheriger_suchwert != None):
             if self.last_filter_parameter.__contains__(self.vorheriger_suchwert):
                 self.last_filter_parameter.remove(self.vorheriger_suchwert)
                 self.vorheriger_suchwert = key
-                self.last_filter_parameter.append(key)
-                self.filter_state = True
-                self.such_filter_state = True
-                self.anzeige_liste = self.buchungen.copy()
+                if key != None:
+                    self.last_filter_parameter.append(key)
+                    self.filter_state = True
+                    self.anzeige_liste = self.buchungen.copy()
             else:
-                self.vorheriger_suchwert = key
-                self.last_filter_parameter.append(key)
-                self.filter_state = True
-                self.such_filter_state = True
+                if key != None:
+                    self.vorheriger_suchwert = key
+                    self.last_filter_parameter.append(key)
+                    self.filter_state = True
         else:
             if self.last_filter_parameter.__contains__(self.vorheriger_suchwert):
                 self.last_filter_parameter.remove(self.vorheriger_suchwert)
             self.filter_state = False
-            self.such_filter_state = False
             self.vorheriger_suchwert = None
-
+            
+        
         if state:
             self.filter_state = True
             if key != None and such_filter != True:
                 self.last_filter_parameter.append(key)
         else:
+            print(self.last_filter_parameter)
             self.anzeige_liste = self.buchungen.copy()
             
             if self.last_filter_parameter.__contains__(key):

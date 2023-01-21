@@ -1,7 +1,7 @@
 import customtkinter
 import popup
 from PIL import Image
-
+import tkinter as tk
 # erstellt die komplette Benutzeroberfläche
 
 
@@ -196,11 +196,13 @@ class Gui():
         title = customtkinter.CTkLabel(frame, text="Buchungen")
         title.grid(row=0,column=0,pady=2, padx=2)
 
-        self.frame1 = customtkinter.CTkFrame(frame)
+        self.frame1 = customtkinter.CTkCanvas(frame)
         self.frame1.grid(row=1, column=0,padx=5,pady=5,sticky="nsew")
-        scrollbar = customtkinter.CTkScrollbar(self.frame1, command=self.frame1.yview)
+        scrollbar = customtkinter.CTkScrollbar(frame,command=self.frame1.yview)
+        scrollbar.grid(row=0, column=1, sticky="ns")
         self.frame1.configure(yscrollcommand=scrollbar.set)
-        scrollbar.grid(row=0,column=1, sticky="ns")
+
+        
         self.set_update_buchungen()
         add_button = customtkinter.CTkButton(frame, fg_color="#49705c", hover_color="#59886f", text="+", command=add_buchung)
         add_button.grid(row=2, column=0, padx=5,pady=5)
