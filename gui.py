@@ -46,7 +46,7 @@ class Gui():
             edit_btn[j] = customtkinter.CTkButton(self.existierende_objecte[j], width=80, height=80, image=zahnrad, fg_color="transparent",text="", command=edit)
             edit_btn[j].grid(row=0,column=1,padx=2,pady=2)
             j+=1
-        
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 ########################################################################################################################################
     def set_update_kontostand(self):
         self.kontostand_.set(str(f'{self.datamanager.get_kontostand():.2f}'+" €"))
@@ -196,11 +196,18 @@ class Gui():
         title = customtkinter.CTkLabel(frame, text="Buchungen")
         title.grid(row=0,column=0,pady=2, padx=2)
 
-        self.frame1 = customtkinter.CTkCanvas(frame)
-        self.frame1.grid(row=1, column=0,padx=5,pady=5,sticky="nsew")
-        scrollbar = customtkinter.CTkScrollbar(frame,command=self.frame1.yview)
-        scrollbar.grid(row=0, column=1, sticky="ns")
-        self.frame1.configure(yscrollcommand=scrollbar.set)
+        def set_scrollregion(event):
+            self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        
+        self.canvas = customtkinter.CTkCanvas(frame, height= 700,width=534,bg="#000000", bd=0, highlightthickness=0, relief='ridge')
+        self.canvas.grid(row=1, column=0,padx=5,pady=5,sticky="nsew")
+        self.canvas.bind("<Configure>", set_scrollregion)
+        self.frame1 = customtkinter.CTkFrame(self.canvas, width=534)
+        self.frame1.grid(row=0, column=0,padx=5,pady=5,sticky="nsew")
+        self.canvas.create_window((0,0),window=self.frame1,anchor="nw")
+        scrollbar = customtkinter.CTkScrollbar(frame,command=self.canvas.yview)
+        scrollbar.grid(row=1,column=1, sticky="ns")
+        self.canvas.configure(yscrollcommand=scrollbar.set)
 
         
         self.set_update_buchungen()
