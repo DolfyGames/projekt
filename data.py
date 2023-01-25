@@ -184,12 +184,20 @@ class Data():
     def get_kontostand(self):
         return self.calc_kontostand()
 
-    def calc_kontostand(self):
-        kontostand=0
-        for buchung in self.buchungen:
-            if buchung["buchungs_art"] == "in":
-                kontostand += buchung["wert"]
-            else:
-                kontostand -= buchung["wert"]
-                
+    def calc_kontostand(self, konto="gesamt"):
+        if konto == "gesamt":
+            kontostand = 0
+            for buchung in self.buchungen:
+                if buchung["buchungs_art"] == "in":
+                    kontostand += buchung["wert"]
+                else:
+                    kontostand -= buchung["wert"]
+        else:
+            for buchung in self.buchungen:
+                if buchung["konto"] == konto:
+                    if buchung["buchungs_art"] == "in":
+                        kontostand += buchung["wert"]
+                    else:
+                        kontostand -= buchung["wert"]
+
         return kontostand

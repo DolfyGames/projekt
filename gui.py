@@ -10,6 +10,7 @@ class Gui():
         self.width = width
         self.height = height
         self.existierende_objecte = {}
+        self.existierende_filter = {}
         self.datamanager = datamanager
 
 #########################################################################################################################################          
@@ -63,6 +64,7 @@ class Gui():
     def set_update_filter(self):
         konten = self.datamanager.get_konten()
         kategorien = self.datamanager.get_kategorien()
+        for filter in self.existierende_filter:
         filter_checkbox = {}
         filter_val = {}
         j = 2 #  n um die Checkboxen in die passenden Zeilen zu packen
