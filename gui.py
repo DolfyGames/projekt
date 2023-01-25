@@ -68,9 +68,9 @@ class Gui():
             self.existierende_filter[filter].destroy()
             
         filter_val = {}
-        j = 2 #  n um die Checkboxen in die passenden Zeilen zu packen
+        j = 3 #  n um die Checkboxen in die passenden Zeilen zu packen
         filtern_label_konten = customtkinter.CTkLabel(self.filtern,text="Konten")
-        filtern_label_konten.grid(row=1,column=0,padx=5,pady=5, sticky="w")
+        filtern_label_konten.grid(row=2,column=0,padx=5,pady=5, sticky="w")
         
         for i in konten:
             kontostand = self.datamanager.get_kontostand(i["name"])
@@ -210,8 +210,10 @@ class Gui():
         self.filtern = customtkinter.CTkFrame(master=sidepanel)
         self.filtern.grid(row=1,column=0,padx=5,pady=5, sticky="nsew")
         self.filtern.grid_columnconfigure(0,weight=1)
-        filtern_label = customtkinter.CTkLabel(self.filtern,text="Filter")
+        filtern_label = customtkinter.CTkLabel(self.filtern,text="Filter",font=("TkDefaultFont", 22))
         filtern_label.grid(row=0,column=0,padx=5,pady=5)
+        filtern_hinweis = customtkinter.CTkLabel(self.filtern,text="Hinweis:\nEs können nur Konten / Kategorien gelöscht werden, \ndie nicht mehr Verwendet werden!")
+        filtern_hinweis.grid(row=1,column=0,padx=5,pady=5)
 
         self.set_update_filter()
 #####
