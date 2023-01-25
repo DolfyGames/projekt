@@ -18,7 +18,6 @@ class Gui():
     def set_update_buchungen(self):
         buchungen = list(self.datamanager.get_buchungen())
         j=0
-
         for objects in self.existierende_objecte:
             self.existierende_objecte[objects].destroy()
             
@@ -64,32 +63,85 @@ class Gui():
     def set_update_filter(self):
         konten = self.datamanager.get_konten()
         kategorien = self.datamanager.get_kategorien()
+        
         for filter in self.existierende_filter:
-        filter_checkbox = {}
+            self.existierende_filter[filter].destroy()
+            
         filter_val = {}
         j = 2 #  n um die Checkboxen in die passenden Zeilen zu packen
         filtern_label_konten = customtkinter.CTkLabel(self.filtern,text="Konten")
-        filtern_label_konten.grid(row=1,column=0,padx=5,pady=5)
+        filtern_label_konten.grid(row=1,column=0,padx=5,pady=5, sticky="w")
+        
         for i in konten:
+            kontostand = self.datamanager.get_kontostand(i["name"])
+            verwendungszahl = self.datamanager.get_verwendungszahl("konto",i["name"])
             def checked(val=i["name"], j_=j):
                 self.datamanager.filtern(key=val, state=filter_val[j_].get())
-            
+                
+            def delet(konto=i):
+                if verwendungszahl == 0:
+                    self.datamanager.remove_konto(konto)
+                
             filter_val[j] = customtkinter.BooleanVar()
-            filter_checkbox[j] = customtkinter.CTkCheckBox(self.filtern,text=i["name"],command=checked, variable=filter_val[j], onvalue=True, offvalue=False)
-            filter_checkbox[j].grid(row=j,column=0, padx=5,pady=2) # + n um die Checkboxen in die passenden Zeilen zu packen
-            j += 1
+            self.existierende_filter[j] = customtkinter.CTkFrame(self.filtern)
+            self.existierende_filter[j].grid(row=j,column=0, padx=5,pady=2,sticky="ew") # + n um die Checkboxen in die passenden Zeilen zu packen
             
-        filtern_label_kategorien = customtkinter.CTkLabel(self.filtern,text="Kategorien")
-        filtern_label_kategorien.grid(row=j,column=0,padx=5,pady=5)
+            checkbox = customtkinter.CTkCheckBox(self.existierende_filter[j],text=i["name"]+" "+str(f'{kontostand:.2f}')+" €",command=checked, variable=filter_val[j], onvalue=True, offvalue=False)
+            checkbox.grid(row=0,column=0,padx=5,pady=2)
+            if kontostand >= 0:
+                checkbox.configure(text_color="green")
+            else:
+                checkbox.configure(text_color="red")
+            verwendungszahl_entry = customtkinter.CTkEntry(self.existierende_filter[j])
+            verwendungszahl_entry.grid(row=0,column=1, padx=5,pady=5)
+            verwendungszahl_entry.insert(0,"Verwendungen: "+str(verwendungszahl))
+            verwendungszahl_entry.configure(state="disabled")
+            del_btn = customtkinter.CTkButton(master=self.existierende_filter[j],text="Löschen",command=delet,font=("TkDefaultFont", 12),width=70, height=22)
+            del_btn.grid(row=0,column=2,padx=5,pady=5,sticky="e")
+            j += 1
+        
+        def add_konto():
+                konto_popup = popup.Popup_Konto()
+                konto_popup.create_pop_up_konto(datamanager = self.datamanager)
+        self.existierende_filter[j] = customtkinter.CTkButton(self.filtern, text="Konto Hinzufügen", command=add_konto) # add_konto_btn
+        self.existierende_filter[j].grid(row=j,column=0,padx=5,pady=5)
+        j +=1   
+        self.existierende_filter[j] = customtkinter.CTkLabel(self.filtern,text="Kategorien") #filter_label
+        self.existierende_filter[j].grid(row=j,column=0,padx=5,pady=5,sticky="w")
+        
         j+=1
         for i in kategorien:
+            verwendungszahl = self.datamanager.get_verwendungszahl("kategorie",i)
             def checked(val=i, j_=j):
                 self.datamanager.filtern(key=val, state=filter_val[j_].get())
             
+            def delet(kategorie=i):
+                if verwendungszahl == 0:
+                    self.datamanager.remove_kategorie(kategorie)
+            
             filter_val[j] = customtkinter.BooleanVar()
-            filter_checkbox[j] = customtkinter.CTkCheckBox(self.filtern,text=i,command=checked, variable=filter_val[j], onvalue=True, offvalue=False)
-            filter_checkbox[j].grid(row=j+2,column=0, padx=5,pady=2) # + n um die Checkboxen in die passenden Zeilen zu packen
+            self.existierende_filter[j] = customtkinter.CTkFrame(self.filtern)
+            self.existierende_filter[j].grid(row=j+2,column=0, padx=5,pady=2,sticky="ew") # + n um die Checkboxen in die passenden Zeilen zu packen
+            
+            checkbox = customtkinter.CTkCheckBox(self.existierende_filter[j],text=i,command=checked, variable=filter_val[j], onvalue=True, offvalue=False)
+            checkbox.grid(row=0,column=0, padx=5,pady=2) # + n um die Checkboxen in die passenden Zeilen zu packen
+            
+            verwendungszahl_entry = customtkinter.CTkEntry(self.existierende_filter[j])
+            verwendungszahl_entry.grid(row=0,column=1, padx=5,pady=5)
+            verwendungszahl_entry.insert(0,"Verwendungen: "+str(verwendungszahl))
+            verwendungszahl_entry.configure(state="disabled")
+            
+            del_btn = customtkinter.CTkButton(master=self.existierende_filter[j],text="Löschen",command=delet,font=("TkDefaultFont", 12),width=70, height=22)
+            del_btn.grid(row=0,column=2,padx=5,pady=5,sticky="e")
             j += 1
+        
+        def add_kat():
+            neue_kategorie = customtkinter.CTkInputDialog(title="Kategorie hinzufügen", text="Benennen sie die neue Kategorie")
+            input_ = neue_kategorie.get_input()
+            if input_ != "":
+                self.datamanager.add_kategorie(input_)
+        self.existierende_filter[j] = customtkinter.CTkButton(self.filtern, text="Kategorie Hinzufügen", command=add_kat)
+        self.existierende_filter[j].grid(row=j+2,column=0,padx=5,pady=5)
 #########################################################################################################################################
         
     
@@ -157,6 +209,7 @@ class Gui():
 #####
         self.filtern = customtkinter.CTkFrame(master=sidepanel)
         self.filtern.grid(row=1,column=0,padx=5,pady=5, sticky="nsew")
+        self.filtern.grid_columnconfigure(0,weight=1)
         filtern_label = customtkinter.CTkLabel(self.filtern,text="Filter")
         filtern_label.grid(row=0,column=0,padx=5,pady=5)
 

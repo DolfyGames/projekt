@@ -199,7 +199,7 @@ class Popup_Buchung():
 
 
 class Popup_Konto():
-    def create_pop_up_konto(self, values, parent_optionmenu, datamanager):
+    def create_pop_up_konto(self,  datamanager,values=None, parent_optionmenu=None):
         # instanziierte das Popup-Fenster und setzt die größe Fest
         add_konto_fenster = customtkinter.CTkToplevel()
         add_konto_fenster.geometry("500x200")
@@ -220,11 +220,15 @@ class Popup_Konto():
 
         # Funktion, um das neue Konto hinzufügen
         def complete_add_konto():
-            datamanager.add_konto(name.get(), kontonummer.get())# <--- Fügt ein neues Konto des Konto-Dict zu, mit den Daten der Eingabefelder
-            values.insert(len(values)-1, name.get())# <--- Akutalisiert die Kontoliste für das OptionMenus
-            parent_optionmenu.configure(values=values)# <--- Aktualisiert das OptionMenu
-            parent_optionmenu.set(name.get())
-            add_konto_fenster.destroy()                 # <--- Schließt das Popup-Fenster
-
+            konten = datamanager.get_konten()
+            if any(konto==name.get() for konto in konten):
+                datamanager.add_konto(name.get(), kontonummer.get())# <--- Fügt ein neues Konto des Konto-Dict zu, mit den Daten der Eingabefelder
+                if values != None and parent_optionmenu != None:
+                    values.insert(len(values)-1, name.get())# <--- Akutalisiert die Kontoliste für das OptionMenus
+                    parent_optionmenu.configure(values=values)# <--- Aktualisiert das OptionMenu
+                    parent_optionmenu.set(name.get())
+                add_konto_fenster.destroy()                 # <--- Schließt das Popup-Fenster
+            else:
+                label_name.configure(text="Name (es existiert bereits ein Konto mit diesem Namen)",text_color="red")
         complete_button = customtkinter.CTkButton(master=add_konto_fenster, text="Konto hinzufügen", command=complete_add_konto)
         complete_button.grid(row=3)

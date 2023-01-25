@@ -63,10 +63,17 @@ class Data():
     def add_konto(self,name, kontonummer):
         self.konten.append({"name": name, "kontonummer": kontonummer})
         self.gui.set_update_filter()
-
+        
+    def remove_konto(self,konto):
+        self.konten.remove(konto)
+        self.gui.set_update_filter()
 
     def add_kategorie(self,name):
-        self.kategorien.append(name)
+        if not self.kategorien.__contains__(name):
+            self.kategorien.append(name)
+            self.gui.set_update_filter()
+    def remove_kategorie(self,kategorie):
+        self.kategorien.remove(kategorie)
         self.gui.set_update_filter()
 
         
@@ -86,9 +93,10 @@ class Data():
         
         self.gui.set_update_buchungen()
         self.gui.set_update_kontostand()
+        self.gui.set_update_filter()
     def filtern(self,state,key=None,such_filter=False):
 
-        if (such_filter) and (key != None or self.vorheriger_suchwert != None):
+        if such_filter and (key != None or self.vorheriger_suchwert != None):
             if self.last_filter_parameter.__contains__(self.vorheriger_suchwert):
                 self.last_filter_parameter.remove(self.vorheriger_suchwert)
                 self.vorheriger_suchwert = key
@@ -181,12 +189,12 @@ class Data():
     def get_kategorien(self):
         return self.kategorien
 
-    def get_kontostand(self):
-        return self.calc_kontostand()
+    def get_kontostand(self, konto="gesamt"):
+        return self.calc_kontostand(konto)
 
-    def calc_kontostand(self, konto="gesamt"):
+    def calc_kontostand(self, konto):
+        kontostand = 0
         if konto == "gesamt":
-            kontostand = 0
             for buchung in self.buchungen:
                 if buchung["buchungs_art"] == "in":
                     kontostand += buchung["wert"]
@@ -201,3 +209,16 @@ class Data():
                         kontostand -= buchung["wert"]
 
         return kontostand
+    
+    def get_verwendungszahl(self,konto_or_kategorie,name):
+        verwendungszahl = 0
+        if konto_or_kategorie == "konto":
+            for buchung in self.buchungen:
+                if buchung["konto"] == name:
+                    verwendungszahl += 1
+        else:
+            for buchung in self.buchungen:
+                if buchung["kategorie"].__contains__(name):
+                    verwendungszahl += 1
+        return verwendungszahl
+        
