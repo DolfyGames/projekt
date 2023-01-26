@@ -14,8 +14,12 @@ class Data():
         self.last_sort_reverse = False
         
         self.filter_state = False
-        self.last_filter_parameter = []
-        self.vorheriger_suchwert = None
+        self.last_filter_paramter = {
+            "filter": [],
+            "suche": None
+        }
+        #self.last_filter_parameter = []
+        #self.vorheriger_suchwert = None
 
     def set_gui(self,gui_):
         self.gui = gui_
@@ -94,70 +98,60 @@ class Data():
         self.gui.set_update_buchungen()
         self.gui.set_update_kontostand()
         self.gui.set_update_filter()
-    def filtern(self,state,key=None,such_filter=False):
-
-        if such_filter and (key != None or self.vorheriger_suchwert != None):
-            if self.last_filter_parameter.__contains__(self.vorheriger_suchwert):
-                self.last_filter_parameter.remove(self.vorheriger_suchwert)
-                self.vorheriger_suchwert = key
-                if key != None:
-                    self.last_filter_parameter.append(key)
-                    self.filter_state = True
-                    self.anzeige_liste = self.buchungen.copy()
+    
+    def filtern_(self,art,add,key=None):
+        self.filter_state = True
+        self.anzeige_liste = self.buchungen.copy()
+        if art == "filtern":
+            if add == True:
+                self.last_filter_paramter["filter"].append(key)
             else:
-                if key != None:
-                    self.vorheriger_suchwert = key
-                    self.last_filter_parameter.append(key)
-                    self.filter_state = True
-        else:
-            if self.last_filter_parameter.__contains__(self.vorheriger_suchwert):
-                self.last_filter_parameter.remove(self.vorheriger_suchwert)
+                if self.last_filter_paramter["filter"].__contains__(key):
+                    self.last_filter_paramter["filter"].remove(key)
+                    
+        elif art == "suche":
+            self.last_filter_paramter["suche"] = key
+            
+        if self.last_filter_paramter["filter"] == [] and self.last_filter_paramter["suche"] == None:
             self.filter_state = False
-            self.vorheriger_suchwert = None
-            
-        
-        if state:
-            self.filter_state = True
-            if key != None and such_filter != True:
-                self.last_filter_parameter.append(key)
-        else:
-            print(self.last_filter_parameter)
-            self.anzeige_liste = self.buchungen.copy()
-            
-            if self.last_filter_parameter.__contains__(key):
-                self.last_filter_parameter.remove(key)
-                
-            if self.last_filter_parameter == []:
-                self.filter_state = False
-
+        print(self.last_filter_paramter,self.filter_state)
         if self.filter_state:
             def custom_filter(i):
                 value_list = []     # wandelt die values des dicts so um (in einen 1 dimensinalen array), sodass man schauen kann, ob ein bestimmter string dort drinnen ist
                 bool_list = []
+                such_bool_list = []
                 for obj in list(i.values()):
                     if isinstance(obj,list):
                         value_list.extend(obj)
                     else:
                         value_list.append(obj)
-                for filters in self.last_filter_parameter:
-                    aktueller_filter = []
+                if self.last_filter_paramter["suche"] != None:
                     for values in value_list:
-                        if re.search(str(filters),str(values)):
-                            aktueller_filter.append(True)
+                        if re.search(str(self.last_filter_paramter["suche"]),str(values)):
+                            such_bool_list.append(True)
                         else:
-                            aktueller_filter.append(False)
-                    if aktueller_filter.__contains__(True):
+                            such_bool_list.append(False)
+                    if True in such_bool_list:       
                         bool_list.append(True)
                     else:
                         bool_list.append(False)
+                if self.last_filter_paramter["filter"] != []:        
+                    for filters in self.last_filter_paramter["filter"]:
+                        if filters in i["kategorie"] or filters == i["konto"]:
+                            bool_list.append(True)
+                        else:
+                            bool_list.append(False)
+                        
+                print(bool_list)
                 if all(bool_list):    # für filters in der Liste wird überprüft, ob sich dieser String irgendwo in den Werten vom dict wiederfindet   #Quelle: https://stackoverflow.com/questions/405516/if-all-in-list-something
                     return True
                 else:
                     return False
                   
             self.anzeige_liste = list(filter(custom_filter,self.anzeige_liste))
-        self.gui.set_update_buchungen()
             
+        self.gui.set_update_buchungen() 
+         
     def sort(self,eigenschaft,_reverse):
 
         self.last_sort_paramter = eigenschaft

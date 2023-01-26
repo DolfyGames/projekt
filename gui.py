@@ -76,7 +76,7 @@ class Gui():
             kontostand = self.datamanager.get_kontostand(i["name"])
             verwendungszahl = self.datamanager.get_verwendungszahl("konto",i["name"])
             def checked(val=i["name"], j_=j):
-                self.datamanager.filtern(key=val, state=filter_val[j_].get())
+                self.datamanager.filtern_(art="filtern",key=val, add=filter_val[j_].get())
                 
             def delet(konto=i):
                 if verwendungszahl == 0:
@@ -113,7 +113,7 @@ class Gui():
         for i in kategorien:
             verwendungszahl = self.datamanager.get_verwendungszahl("kategorie",i)
             def checked(val=i, j_=j):
-                self.datamanager.filtern(key=val, state=filter_val[j_].get())
+                self.datamanager.filtern_(art="filtern",key=val, add=filter_val[j_].get())
             
             def delet(kategorie=i):
                 if verwendungszahl == 0:
@@ -210,7 +210,7 @@ class Gui():
         self.filtern = customtkinter.CTkFrame(master=sidepanel)
         self.filtern.grid(row=1,column=0,padx=5,pady=5, sticky="nsew")
         self.filtern.grid_columnconfigure(0,weight=1)
-        filtern_label = customtkinter.CTkLabel(self.filtern,text="Filter",font=("TkDefaultFont", 22))
+        filtern_label = customtkinter.CTkLabel(self.filtern,text="Filtern",font=("TkDefaultFont", 22))
         filtern_label.grid(row=0,column=0,padx=5,pady=5)
         filtern_hinweis = customtkinter.CTkLabel(self.filtern,text="Hinweis:\nEs können nur Konten / Kategorien gelöscht werden, \ndie nicht mehr Verwendet werden!")
         filtern_hinweis.grid(row=1,column=0,padx=5,pady=5)
@@ -233,10 +233,10 @@ class Gui():
         def suche(value):
             such_wert = value
             if value !="Suche" and value != "":
-                self.datamanager.filtern(state=True, key=such_wert, such_filter=True)
+                self.datamanager.filtern_(art="suche", key=such_wert, add=True)
             else:
                 if hasattr(self,"frame1"):
-                    self.datamanager.filtern(state=False, such_filter=False)
+                    self.datamanager.filtern_(art="suche", add=False)
             return True
 
         suche = tool_frame.register(suche)
