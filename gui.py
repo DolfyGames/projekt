@@ -1,7 +1,6 @@
 import customtkinter
 import popup
 from PIL import Image
-import tkinter as tk
 # erstellt die komplette Benutzeroberfläche
 
 
