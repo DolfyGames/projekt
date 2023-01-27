@@ -3,6 +3,8 @@ import popup
 from PIL import Image
 # erstellt die komplette Benutzeroberfläche
 
+        # https://github.com/TomSchimansky/CustomTkinter dokumentation zu customtkiner
+        # https://docs.python.org/3/library/tk.html dokumentation tkinter
 
 class Gui():
     def __init__(self, width, height, datamanager):
@@ -47,6 +49,7 @@ class Gui():
             j+=1
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 ########################################################################################################################################
+    # erstellt und aktualisiert die Kontostandsanzeige
     def set_update_kontostand(self):
         self.kontostand_.set(str(f'{self.datamanager.get_kontostand():.2f}'+" €"))
         if self.datamanager.get_kontostand()>0:
@@ -59,6 +62,7 @@ class Gui():
         
         self.kontostand.configure(text_color=color)
 #########################################################################################################################################
+    # erstellt und aktualisiert die Filter anzeige 
     def set_update_filter(self):
         konten = self.datamanager.get_konten()
         kategorien = self.datamanager.get_kategorien()
