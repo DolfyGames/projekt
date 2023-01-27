@@ -214,7 +214,7 @@ class Gui():
         def set_scrollregion(event):
             self.canvas2.configure(scrollregion=self.canvas2.bbox("all"))
         
-        self.canvas2 = customtkinter.CTkCanvas(sidepanel,bg="#000000", bd=0, highlightthickness=0, relief='ridge')
+        self.canvas2 = customtkinter.CTkCanvas(sidepanel,bg="#000000",width=390, bd=0, highlightthickness=0, relief='ridge')
         self.canvas2.grid(row=1,column=0,padx=5,pady=5, sticky="nsew")
         self.canvas2.bind("<Configure>", set_scrollregion)
         
@@ -273,7 +273,7 @@ class Gui():
         def set_scrollregion(event):
             self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         
-        self.canvas = customtkinter.CTkCanvas(frame, height= 700,width=534,bg="#000000", bd=0, highlightthickness=0, relief='ridge')
+        self.canvas = customtkinter.CTkCanvas(frame, height= 700,width=536,bg="#000000", bd=0, highlightthickness=0, relief='ridge')
         self.canvas.grid(row=1, column=0,padx=5,pady=5,sticky="nsew")
         self.canvas.bind("<Configure>", set_scrollregion)
         self.frame1 = customtkinter.CTkFrame(self.canvas, width=534)
