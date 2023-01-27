@@ -66,10 +66,10 @@ class Gui():
     def set_update_filter(self):
         konten = self.datamanager.get_konten()
         kategorien = self.datamanager.get_kategorien()
-        
         for filter in self.existierende_filter:
+
             self.existierende_filter[filter].destroy()
-            
+        print("check")    
         filter_val = {}
         j = 3 #  n um die Checkboxen in die passenden Zeilen zu packen
         filtern_label_konten = customtkinter.CTkLabel(self.filtern,text="Konten")
@@ -99,7 +99,7 @@ class Gui():
             verwendungszahl_entry.grid(row=0,column=1, padx=5,pady=5)
             verwendungszahl_entry.insert(0,"Verwendungen: "+str(verwendungszahl))
             verwendungszahl_entry.configure(state="disabled")
-            del_btn = customtkinter.CTkButton(master=self.existierende_filter[j],text="Löschen",command=delet,font=("TkDefaultFont", 12),width=70, height=22)
+            del_btn = customtkinter.CTkButton(master=self.existierende_filter[j],text="Löschen",command=delet,width=70, height=22)
             del_btn.grid(row=0,column=2,padx=5,pady=5,sticky="e")
             j += 1
         
@@ -134,7 +134,7 @@ class Gui():
             verwendungszahl_entry.insert(0,"Verwendungen: "+str(verwendungszahl))
             verwendungszahl_entry.configure(state="disabled")
             
-            del_btn = customtkinter.CTkButton(master=self.existierende_filter[j],text="Löschen",command=delet,font=("TkDefaultFont", 12),width=70, height=22)
+            del_btn = customtkinter.CTkButton(master=self.existierende_filter[j],text="Löschen",command=delet,width=70, height=22)
             del_btn.grid(row=0,column=2,padx=5,pady=5,sticky="e")
             j += 1
         
@@ -142,7 +142,7 @@ class Gui():
             neue_kategorie = customtkinter.CTkInputDialog(title="Kategorie hinzufügen", text="Benennen sie die neue Kategorie")
             input_ = neue_kategorie.get_input()
             print(input_)
-            if input_ != "" or input_ != None:
+            if input_ != "" and input_ != None:
                 self.datamanager.add_kategorie(input_)
         self.existierende_filter[j] = customtkinter.CTkButton(self.filtern, text="Kategorie Hinzufügen", command=add_kat)
         self.existierende_filter[j].grid(row=j+2,column=0,padx=5,pady=5)
