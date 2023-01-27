@@ -1,4 +1,4 @@
-# Buchunstool
+# Buchungstool
 
 ## Instalieren
 ```pip install -r requirements.txt```
