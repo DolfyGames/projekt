@@ -93,7 +93,7 @@ class Data():
         if self.sort_state == True:
             self.sort(self.last_sort_paramter,self.last_sort_reverse)
         if self.filter_state == True:
-            self.filtern(state=True)
+            self.filtern_(art="update", add=False)
         
         self.gui.set_update_buchungen()
         self.gui.set_update_kontostand()
@@ -114,7 +114,6 @@ class Data():
             
         if self.last_filter_paramter["filter"] == [] and self.last_filter_paramter["suche"] == None:
             self.filter_state = False
-        print(self.last_filter_paramter,self.filter_state)
         if self.filter_state:
             def custom_filter(i):
                 value_list = []     # wandelt die values des dicts so um (in einen 1 dimensinalen array), sodass man schauen kann, ob ein bestimmter string dort drinnen ist
@@ -142,22 +141,24 @@ class Data():
                         else:
                             bool_list.append(False)
                         
-                print(bool_list)
                 if all(bool_list):    # für filters in der Liste wird überprüft, ob sich dieser String irgendwo in den Werten vom dict wiederfindet   #Quelle: https://stackoverflow.com/questions/405516/if-all-in-list-something
                     return True
                 else:
                     return False
                   
             self.anzeige_liste = list(filter(custom_filter,self.anzeige_liste))
-            
-        self.gui.set_update_buchungen() 
+        print(self.sort_state)
+        if self.sort_state:
+            self.sort(self.last_sort_paramter,self.last_sort_reverse)  
+        else:
+            self.gui.set_update_buchungen() 
          
     def sort(self,eigenschaft,_reverse):
 
         self.last_sort_paramter = eigenschaft
         self.last_sort_reverse = _reverse
         self.sort_state = True
-        
+        print(eigenschaft)
         if eigenschaft == "wert":
             self.anzeige_liste = list(sorted(self.anzeige_liste,key=lambda x: x[eigenschaft],reverse=_reverse))
         elif eigenschaft == "zeitpunkt":
