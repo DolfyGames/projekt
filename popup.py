@@ -221,7 +221,13 @@ class Popup_Konto():
         # Funktion, um das neue Konto hinzufügen
         def complete_add_konto():
             konten = datamanager.get_konten()
-            if not any(konto==name.get() for konto in konten):
+            bool_list = []
+            for konto in konten:
+                if konto["name"] == name.get():
+                    bool_list.append(False)
+                else:
+                    bool_list.append(True)
+            if all(bool_list):
                 datamanager.add_konto(name.get(), kontonummer.get())# <--- Fügt ein neues Konto des Konto-Dict zu, mit den Daten der Eingabefelder
                 if values != None and parent_optionmenu != None:
                     values.insert(len(values)-1, name.get())# <--- Akutalisiert die Kontoliste für das OptionMenus

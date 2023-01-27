@@ -67,9 +67,8 @@ class Gui():
         konten = self.datamanager.get_konten()
         kategorien = self.datamanager.get_kategorien()
         for filter in self.existierende_filter:
-
             self.existierende_filter[filter].destroy()
-        print("check")    
+        self.existierende_filter = {}   
         filter_val = {}
         j = 3 #  n um die Checkboxen in die passenden Zeilen zu packen
         filtern_label_konten = customtkinter.CTkLabel(self.filtern,text="Konten")
@@ -111,7 +110,7 @@ class Gui():
         j +=1   
         self.existierende_filter[j] = customtkinter.CTkLabel(self.filtern,text="Kategorien") #filter_label
         self.existierende_filter[j].grid(row=j,column=0,padx=5,pady=5,sticky="w")
-        
+
         j+=1
         for i in kategorien:
             verwendungszahl = self.datamanager.get_verwendungszahl("kategorie",i)
@@ -141,7 +140,7 @@ class Gui():
         def add_kat():
             neue_kategorie = customtkinter.CTkInputDialog(title="Kategorie hinzufügen", text="Benennen sie die neue Kategorie")
             input_ = neue_kategorie.get_input()
-            print(input_)
+
             if input_ != "" and input_ != None:
                 self.datamanager.add_kategorie(input_)
         self.existierende_filter[j] = customtkinter.CTkButton(self.filtern, text="Kategorie Hinzufügen", command=add_kat)
