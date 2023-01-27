@@ -145,6 +145,7 @@ class Gui():
                 self.datamanager.add_kategorie(input_)
         self.existierende_filter[j] = customtkinter.CTkButton(self.filtern, text="Kategorie Hinzufügen", command=add_kat)
         self.existierende_filter[j].grid(row=j+2,column=0,padx=5,pady=5)
+        self.canvas2.configure(scrollregion=self.canvas2.bbox("all"))
 #########################################################################################################################################
         
     
@@ -210,9 +211,22 @@ class Gui():
         datum_alt = customtkinter.CTkRadioButton(sortieren,text="Alt->Neu",variable=select_var,value="alt", command=clicked)
         datum_alt.grid(row=2,column=2)
 #####
-        self.filtern = customtkinter.CTkFrame(master=sidepanel)
-        self.filtern.grid(row=1,column=0,padx=5,pady=5, sticky="nsew")
+        def set_scrollregion(event):
+            self.canvas2.configure(scrollregion=self.canvas2.bbox("all"))
+        
+        self.canvas2 = customtkinter.CTkCanvas(sidepanel,bg="#000000", bd=0, highlightthickness=0, relief='ridge')
+        self.canvas2.grid(row=1,column=0,padx=5,pady=5, sticky="nsew")
+        self.canvas2.bind("<Configure>", set_scrollregion)
+        
+        self.filtern = customtkinter.CTkFrame(master=self.canvas2)
+        self.filtern.grid(row=0,column=0,padx=5,pady=5, sticky="nsew")
         self.filtern.grid_columnconfigure(0,weight=1)
+        
+        self.canvas2.create_window((0,0),window=self.filtern,anchor="nw")
+        scrollbar = customtkinter.CTkScrollbar(sidepanel,command=self.canvas2.yview)
+        scrollbar.grid(row=1,column=1, sticky="ns")
+        self.canvas2.configure(yscrollcommand=scrollbar.set)
+        
         filtern_label = customtkinter.CTkLabel(self.filtern,text="Filtern",font=("TkDefaultFont", 22))
         filtern_label.grid(row=0,column=0,padx=5,pady=5)
         filtern_hinweis = customtkinter.CTkLabel(self.filtern,text="Hinweis:\nEs können nur Konten / Kategorien gelöscht werden, \ndie nicht mehr Verwendet werden!")
@@ -255,7 +269,7 @@ class Gui():
         frame.grid_rowconfigure(1, weight =1)
         title = customtkinter.CTkLabel(frame, text="Buchungen")
         title.grid(row=0,column=0,pady=2, padx=2)
-
+        # canvas um die ansicht scrollbar zu machen 
         def set_scrollregion(event):
             self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         

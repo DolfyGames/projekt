@@ -6,7 +6,7 @@ import data
 # Und ganz in Englisch hab ich es auch nicht geschrieben, da ich manche englische Begriffe nicht weis und auch keine lust hatte die immer nachzuschauen 
 datamanager = data.Data()       # erstellt den Datenmanager (welche das ganze "backend" übernimmt)
 datamanager.load()
-gui_ = gui.Gui("1920","1080",datamanager) # erstellt die benutzeroberfläche 
+gui_ = gui.Gui("1440","1080",datamanager) # erstellt die benutzeroberfläche 
 datamanager.set_gui(gui_)  # übergibt dem datenmanager die classe der benutzeroberfläche, sodass dieser dann teile der Benutzeroberfläche aktualisieren lassen kann 
 gui_.create_gui()
 
