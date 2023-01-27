@@ -97,7 +97,7 @@ class Popup_Buchung():
                     if name == "Hinzufügen":
                         neue_kategorie = customtkinter.CTkInputDialog(title="Kategorie hinzufügen", text="Benennen sie die neue Kategorie")
                         input_ = neue_kategorie.get_input()
-                        if input_ != "":
+                        if input_ != "" or input_ != None:
                             self.datamanager.add_kategorie(input_)
                             create_kat_selection()
                     elif self.kat_btn_dict[id].cget("fg_color")=="transparent":    

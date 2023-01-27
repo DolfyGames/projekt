@@ -81,7 +81,7 @@ class Gui():
             def checked(val=i["name"], j_=j):
                 self.datamanager.filtern_(art="filtern",key=val, add=filter_val[j_].get())
                 
-            def delet(konto=i):
+            def delet(verwendungszahl=verwendungszahl,konto=i):
                 if verwendungszahl == 0:
                     self.datamanager.remove_konto(konto)
                 
@@ -118,7 +118,7 @@ class Gui():
             def checked(val=i, j_=j):
                 self.datamanager.filtern_(art="filtern",key=val, add=filter_val[j_].get())
             
-            def delet(kategorie=i):
+            def delet(verwendungszahl=verwendungszahl,kategorie=i):
                 if verwendungszahl == 0:
                     self.datamanager.remove_kategorie(kategorie)
             
@@ -141,7 +141,8 @@ class Gui():
         def add_kat():
             neue_kategorie = customtkinter.CTkInputDialog(title="Kategorie hinzufügen", text="Benennen sie die neue Kategorie")
             input_ = neue_kategorie.get_input()
-            if input_ != "":
+            print(input_)
+            if input_ != "" or input_ != None:
                 self.datamanager.add_kategorie(input_)
         self.existierende_filter[j] = customtkinter.CTkButton(self.filtern, text="Kategorie Hinzufügen", command=add_kat)
         self.existierende_filter[j].grid(row=j+2,column=0,padx=5,pady=5)
