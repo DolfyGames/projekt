@@ -155,7 +155,7 @@ class Popup_Buchung():
                     self.datamanager.add_buchung(
                                 title=title.get(), 
                                 wert=float(wert.get()),
-                                buchungs_art="in" if in_out.__contains__("+") else "out", # da die String in der Auswahl (aus Verständnissgründen) nicht der verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
+                                buchungs_art="in" if in_out.__contains__("+") else "out", # da die Strings in der Auswahl (aus Verständnissgründen) nicht den verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
                                 konto=konto_,
                                 kategorie=selected,
                                 zeitpunkt=datum.get()
@@ -165,7 +165,7 @@ class Popup_Buchung():
                     neu ={
                                 "title":title.get(), 
                                 "wert":float(wert.get()),
-                                "buchungs_art":"in" if in_out.__contains__("+") else "out", # da die String in der Auswahl (aus Verständnissgründen) nicht der verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
+                                "buchungs_art":"in" if in_out.__contains__("+") else "out", # da die Strings in der Auswahl (aus Verständnissgründen) nicht den verarbeitbaren Strings entsprechen, werden sie hier umgewandelt
                                 "konto":konto_,
                                 "kategorie":selected,
                                 "zeitpunkt":datum.get()
