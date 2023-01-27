@@ -97,7 +97,7 @@ class Popup_Buchung():
                     if name == "Hinzufügen":
                         neue_kategorie = customtkinter.CTkInputDialog(title="Kategorie hinzufügen", text="Benennen sie die neue Kategorie")
                         input_ = neue_kategorie.get_input()
-                        if input_ != "" or input_ != None:
+                        if input_ != "" and input_ != None:
                             self.datamanager.add_kategorie(input_)
                             create_kat_selection()
                     elif self.kat_btn_dict[id].cget("fg_color")=="transparent":    
@@ -221,7 +221,7 @@ class Popup_Konto():
         # Funktion, um das neue Konto hinzufügen
         def complete_add_konto():
             konten = datamanager.get_konten()
-            if any(konto==name.get() for konto in konten):
+            if not any(konto==name.get() for konto in konten):
                 datamanager.add_konto(name.get(), kontonummer.get())# <--- Fügt ein neues Konto des Konto-Dict zu, mit den Daten der Eingabefelder
                 if values != None and parent_optionmenu != None:
                     values.insert(len(values)-1, name.get())# <--- Akutalisiert die Kontoliste für das OptionMenus
