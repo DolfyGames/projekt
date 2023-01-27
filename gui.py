@@ -227,7 +227,7 @@ class Gui():
         tool_frame =  customtkinter.CTkFrame(master=finanz_übersicht)
         tool_frame.grid(row=0,column=0, sticky="nsew", padx=5, pady=5)
         
-        tool_label = customtkinter.CTkLabel(tool_frame,text="Kontostand: Gesammt")
+        tool_label = customtkinter.CTkLabel(tool_frame,text="Kontostand: Gesamt")
         tool_label.grid(row=0,column=0)
         self.kontostand_ = customtkinter.StringVar()
         self.kontostand = customtkinter.CTkEntry(tool_frame,state="disabled",textvariable=self.kontostand_)
